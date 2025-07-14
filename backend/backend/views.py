@@ -1,6 +1,6 @@
 from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser
-from .serializers import UserSerializer
+from users.serializers import UserSerializer
 from users.models import CustomUser
 
 

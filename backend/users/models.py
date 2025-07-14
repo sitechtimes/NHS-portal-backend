@@ -9,7 +9,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_("The Email field must be set"))
 
         email = self.normalize_email(email)
-        user = self.model(email=email, user_type=user_type, **extra_fields)
+        user = CustomUser(email=email, user_type=user_type, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -28,6 +28,10 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
     username = None
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    osis_last_four_digits = models.CharField(max_length=100, unique=True)
+    official_class = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
