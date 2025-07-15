@@ -2,42 +2,52 @@ from django.db import models
 from users.models import CustomUser
 
 
-class ServiceProfile(Profile):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    recommendation_teacher = models.CharField(max_length=255)
+class ServiceProfile(models.Model):
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="service_profile"
+    )
+    recommendation_teacher = models.CharField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
-class LeadershipProfile(Profile):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    teacher_leadership = models.CharField()
-    teacher_character = models.CharField()
-    teacher_scholarship = models.CharField()
+class LeadershipProfile(models.Model):
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="leadership_profile"
+    )
+    teacher_leadership = models.CharField(null=True, blank=True)
+    teacher_character = models.CharField(null=True, blank=True)
+    teacher_scholarship = models.CharField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
-class Activity(models.Model):
-    title = models.CharField(max_length=100)
-    supervisor = models.CharField(max_length=100)
-    screenshot_link = models.CharField(max_length=255)
-
-
-class ServiceActivity(Activity):
-    service_profile = models.ForeignKey(ServiceProfile, on_delete=models.CASCADE)
-    grades = models.JSONField(default=list)
-    hours = models.IntegerField()
+class ServiceActivity(models.Model):
+    title = models.CharField(null=True, blank=True)
+    supervisor = models.CharField(null=True, blank=True)
+    screenshot_link = models.CharField(null=True, blank=True)
+    service_profile = models.ForeignKey(
+        ServiceProfile, on_delete=models.CASCADE, related_name="service_activities"
+    )
+    grades = models.JSONField(default=list, null=True, blank=True)
+    hours = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.title
 
 
-class LeadershipActivity(Activity):
-    Leadership_profile = models.ForeignKey(LeadershipProfile, on_delete=models.CASCADE)
-    description = models.TextField()
+class LeadershipActivity(models.Model):
+    title = models.CharField(null=True, blank=True)
+    supervisor = models.CharField(null=True, blank=True)
+    screenshot_link = models.CharField(null=True, blank=True)
+    leadership_profile = models.ForeignKey(
+        LeadershipProfile,
+        on_delete=models.CASCADE,
+        related_name="leadership_activities",
+    )
+    description = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.title

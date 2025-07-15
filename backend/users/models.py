@@ -28,10 +28,10 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
     username = None
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    osis_last_four_digits = models.CharField(max_length=100, unique=True)
-    official_class = models.CharField(max_length=100)
+    first_name = models.CharField()
+    last_name = models.CharField()
+    osis_last_four_digits = models.CharField()
+    official_class = models.CharField()
     email = models.EmailField(unique=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

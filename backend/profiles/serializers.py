@@ -5,65 +5,64 @@ from profiles.models import (
     ServiceActivity,
     LeadershipActivity,
 )
+from users.models import CustomUser
 
 
 class ServiceProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceProfile
-        fields = [
-            "first_name",
-            "last_name",
-            "osis_last_four_digits",
-            "official_class",
-            "email",
-        ]
+        fields = ["id", "recommendation_teacher"]
 
     def create(self, validated_data):
+        user = CustomUser.objects.get(id=validated_data["user_id"])
         profile = ServiceProfile.objects.create(
-            first_name=validated_data["first_name"],
-            last_name=validated_data["last_name"],
-            osis_last_four_digits=validated_data["osis_last_four_digits"],
-            official_class=validated_data["official_class"],
-            email=validated_data["email"],
+            user=user,
         )
         return profile
 
     def delete(self, validated_data):
-        profile = ServiceProfile.objects.filter(id=validated_data.get("pk"))
+        profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
         if profile.exists():
             profile.delete()
         return validated_data
+
+    def update(self, instance, validated_data):
+        # service_profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
+        instance.recommendation_teacher = validated_data.get("recommendation_teacher")
+        instance.save()
+        return instance
 
 
 class LeadershipProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = LeadershipProfile
         fields = [
-            "first_name",
-            "last_name",
-            "osis_last_four_digits",
-            "official_class",
-            "email",
+            "id",
             "teacher_leadership",
             "teacher_character",
             "teacher_scholarship",
         ]
 
     def create(self, validated_data):
+        user = CustomUser.objects.get(id=validated_data["user_id"])
         profile = LeadershipProfile.objects.create(
-            first_name=validated_data["first_name"],
-            last_name=validated_data["last_name"],
-            osis_last_four_digits=validated_data["osis_last_four_digits"],
-            official_class=validated_data["official_class"],
-            email=validated_data["email"],
+            user=user,
         )
         return profile
 
     def delete(self, validated_data):
-        profile = LeadershipProfile.objects.filter(id=validated_data.get("pk"))
+        profile = LeadershipProfile.objects.get(id=validated_data.get("pk"))
         if profile.exists():
             profile.delete()
         return validated_data
+
+    def update(self, instance, validated_data):
+        # print(validated_data)
+        instance.teacher_leadership = validated_data.get("teacher_leadership")
+        instance.teacher_character = validated_data.get("teacher_character")
+        instance.teacher_scholarship = validated_data.get("teacher_scholarship")
+        instance.save()
+        return instance
 
 
 class ServiceActivitySerializer(serializers.ModelSerializer):
@@ -73,19 +72,20 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
             "title",
             "supervisor",
             "screenshot_link",
-            "service_profile",
             "grades",
             "hours",
         ]
 
     def create(self, validated_data):
+        user = self.context["request"].user
+        service_profile = ServiceProfile.objects.get(user=user)
         activity = ServiceActivity.objects.create(
             title=validated_data["title"],
             supervisor=validated_data["supervisor"],
             screenshot_link=validated_data["screenshot_link"],
-            service_profile=validated_data["service_profile"],
             grades=validated_data["grades"],
             hours=validated_data["hours"],
+            service_profile=service_profile,
         )
         return activity
 
@@ -95,6 +95,16 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
             activity.delete()
         return validated_data
 
+    def update(self, instance, validated_data):
+        # service_profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
+        instance.title = validated_data.get("title")
+        instance.supervisor = validated_data.get("supervisor")
+        instance.screenshot_link = validated_data.get("screenshot_link")
+        instance.grades = validated_data.get("grades")
+        instance.hours = validated_data.get("hours")
+        instance.save()
+        return instance
+
 
 class LeadershipActivitySerializer(serializers.ModelSerializer):
     class Meta:
@@ -103,17 +113,18 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
             "title",
             "supervisor",
             "screenshot_link",
-            "leadership_profile",
             "description",
         ]
 
     def create(self, validated_data):
+        user = self.context["request"].user
+        leadership_profile = LeadershipProfile.objects.get(user=user)
         activity = LeadershipActivity.objects.create(
             title=validated_data["title"],
             supervisor=validated_data["supervisor"],
             screenshot_link=validated_data["screenshot_link"],
-            leadership_profile=validated_data["leadership_profile"],
             description=validated_data["description"],
+            leadership_profile=leadership_profile,
         )
         return activity
 
@@ -122,3 +133,12 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
         if activity.exists():
             activity.delete()
         return validated_data
+
+    def update(self, instance, validated_data):
+        # service_profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
+        instance.title = validated_data.get("title")
+        instance.supervisor = validated_data.get("supervisor")
+        instance.screenshot_link = validated_data.get("screenshot_link")
+        instance.description = validated_data.get("description")
+        instance.save()
+        return instance
