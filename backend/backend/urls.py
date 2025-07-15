@@ -23,6 +23,7 @@ from django.contrib import admin
 from django.urls import path
 from users.views import *
 from profiles.views import *
+from guidance.views import *
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -70,4 +71,15 @@ urlpatterns = [
     ),
     path("users/create-user/", CreateUser.as_view(), name="create-user"),
     path("users/delete-user/<int:pk>/", DeleteUser.as_view(), name="delete-user"),
+    path("guidance/student-view/<int:pk>/", StudentView.as_view(), name="view-student"),
+    path(
+        "guidance/expanded-student-view/<int:pk>/",
+        ExpandedStudentView.as_view(),
+        name="expanded-student-view",
+    ),
+    path(
+        "guidance/all-students-view/",
+        AllStudentsView.as_view(),
+        name="all-students-view",
+    ),
 ]

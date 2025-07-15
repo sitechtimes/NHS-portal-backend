@@ -8,64 +8,8 @@ from profiles.models import (
 from users.models import CustomUser
 
 
-class ServiceProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ServiceProfile
-        fields = ["id", "recommendation_teacher"]
-
-    def create(self, validated_data):
-        user = CustomUser.objects.get(id=validated_data["user_id"])
-        profile = ServiceProfile.objects.create(
-            user=user,
-        )
-        return profile
-
-    def delete(self, validated_data):
-        profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
-        if profile.exists():
-            profile.delete()
-        return validated_data
-
-    def update(self, instance, validated_data):
-        # service_profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
-        instance.recommendation_teacher = validated_data.get("recommendation_teacher")
-        instance.save()
-        return instance
-
-
-class LeadershipProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LeadershipProfile
-        fields = [
-            "id",
-            "teacher_leadership",
-            "teacher_character",
-            "teacher_scholarship",
-        ]
-
-    def create(self, validated_data):
-        user = CustomUser.objects.get(id=validated_data["user_id"])
-        profile = LeadershipProfile.objects.create(
-            user=user,
-        )
-        return profile
-
-    def delete(self, validated_data):
-        profile = LeadershipProfile.objects.get(id=validated_data.get("pk"))
-        if profile.exists():
-            profile.delete()
-        return validated_data
-
-    def update(self, instance, validated_data):
-        # print(validated_data)
-        instance.teacher_leadership = validated_data.get("teacher_leadership")
-        instance.teacher_character = validated_data.get("teacher_character")
-        instance.teacher_scholarship = validated_data.get("teacher_scholarship")
-        instance.save()
-        return instance
-
-
 class ServiceActivitySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = ServiceActivity
         fields = [
@@ -142,3 +86,82 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
         instance.description = validated_data.get("description")
         instance.save()
         return instance
+
+
+class ServiceProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceProfile
+        fields = ["id", "recommendation_teacher"]
+
+    def create(self, validated_data):
+        user = CustomUser.objects.get(id=validated_data["user_id"])
+        profile = ServiceProfile.objects.create(
+            user=user,
+        )
+        return profile
+
+    def delete(self, validated_data):
+        profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
+        if profile.exists():
+            profile.delete()
+        return validated_data
+
+    def update(self, instance, validated_data):
+        # service_profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
+        instance.recommendation_teacher = validated_data.get("recommendation_teacher")
+        instance.save()
+        return instance
+
+
+class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
+    service_activity = ServiceActivitySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ServiceProfile
+        fields = ["id", "recommendation_teacher", "service_activity"]
+
+
+class LeadershipProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LeadershipProfile
+        fields = [
+            "id",
+            "teacher_leadership",
+            "teacher_character",
+            "teacher_scholarship",
+        ]
+
+    def create(self, validated_data):
+        user = CustomUser.objects.get(id=validated_data["user_id"])
+        profile = LeadershipProfile.objects.create(
+            user=user,
+        )
+        return profile
+
+    def delete(self, validated_data):
+        profile = LeadershipProfile.objects.get(id=validated_data.get("pk"))
+        if profile.exists():
+            profile.delete()
+        return validated_data
+
+    def update(self, instance, validated_data):
+        # print(validated_data)
+        instance.teacher_leadership = validated_data.get("teacher_leadership")
+        instance.teacher_character = validated_data.get("teacher_character")
+        instance.teacher_scholarship = validated_data.get("teacher_scholarship")
+        instance.save()
+        return instance
+
+
+class ExpandedLeadershipProfileSerializer(serializers.ModelSerializer):
+    leadership_activity = LeadershipActivitySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = LeadershipProfile
+        fields = [
+            "id",
+            "teacher_leadership",
+            "teacher_character",
+            "teacher_scholarship",
+            "leadership_activity",
+        ]

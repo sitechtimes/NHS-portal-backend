@@ -1,5 +1,9 @@
 from rest_framework import permissions, viewsets, serializers
 from users.models import CustomUser
+from profiles.serializers import (
+    ExpandedServiceProfileSerializer,
+    ExpandedLeadershipProfileSerializer,
+)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -35,3 +39,26 @@ class UserSerializer(serializers.ModelSerializer):
         if user.exists():
             user.delete()
         return validated_data
+
+    def get(self, instance):
+        user = CustomUser.objects.get(id=instance.get("pk"))
+        return user
+
+
+class ExpandedUserSerializer(serializers.ModelSerializer):
+    service_profile = ExpandedServiceProfileSerializer()
+    leadership_profile = ExpandedLeadershipProfileSerializer()
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "osis_last_four_digits",
+            "official_class",
+            "email",
+            "user_type",
+            "service_profile",
+            "leadership_profile",
+        ]
