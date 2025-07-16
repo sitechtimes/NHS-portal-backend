@@ -52,25 +52,23 @@ class FilterStudentsView(ListAPIView):
         email = params.get("email")
         graduation_year = params.get("graduation_year")
 
-        if params.get("first_name"):
-            queryset = queryset.filter(first_name__icontains=params["first_name"])
+        if first_name:
+            queryset = queryset.filter(first_name__icontains=first_name)
 
-        if params.get("last_name"):
-            queryset = queryset.filter(last_name__icontains=params["last_name"])
+        if last_name:
+            queryset = queryset.filter(last_name__icontains=last_name)
 
-        if params.get("osis_last_four_digits"):
-            queryset = queryset.filter(
-                osis_last_four_digits=params["osis_last_four_digits"]
-            )
+        if osis_last_four_digits:
+            queryset = queryset.filter(osis_last_four_digits=osis_last_four_digits)
 
-        if params.get("official_class"):
-            queryset = queryset.filter(official_class=params["official_class"])
+        if official_class:
+            queryset = queryset.filter(official_class=official_class)
 
-        if params.get("email"):
-            queryset = queryset.filter(email__icontains=params["email"])
+        if email:
+            queryset = queryset.filter(email__icontains=email)
 
-        if params.get("graduation_year"):
-            queryset = queryset.filter(graduation_year=params["graduation_year"])
+        if graduation_year:
+            queryset = queryset.filter(graduation_year=graduation_year)
 
         return queryset
 
