@@ -54,19 +54,14 @@ class FilterStudentsView(ListAPIView):
 
         if first_name:
             queryset = queryset.filter(first_name__icontains=first_name)
-
         if last_name:
             queryset = queryset.filter(last_name__icontains=last_name)
-
         if osis_last_four_digits:
             queryset = queryset.filter(osis_last_four_digits=osis_last_four_digits)
-
         if official_class:
             queryset = queryset.filter(official_class=official_class)
-
         if email:
             queryset = queryset.filter(email__icontains=email)
-
         if graduation_year:
             queryset = queryset.filter(graduation_year=graduation_year)
 
