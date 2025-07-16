@@ -1,0 +1,50 @@
+from django.urls import path
+from .views import *
+
+urlpatterns = [
+    path(
+        "create-service-activity/",
+        CreateServiceActivity.as_view(),
+        name="create-service-activity",
+    ),
+    path(
+        "delete-service-activity/<int:pk>/",
+        DeleteServiceActivity.as_view(),
+        name="delete-service-activity",
+    ),
+    path(
+        "update-service-activity/<int:pk>/",
+        UpdateServiceActivity.as_view(),
+        name="update-service-activity",
+    ),
+    path(
+        "create-leadership-activity/",
+        CreateLeadershipActivity.as_view(),
+        name="create-leadership-activity",
+    ),
+    path(
+        "delete-leadership-activity/<int:pk>/",
+        DeleteLeadershipActivity.as_view(),
+        name="delete-leadership-activity",
+    ),
+    path(
+        "update-leadership-activity/<int:pk>/",
+        UpdateLeadershipActivity.as_view(),
+        name="update-leadership-activity",
+    ),
+    path(
+        "update-service-profile/<int:pk>/",
+        UpdateServiceProfile.as_view(),
+        name="update-service-profile",
+    ),
+    path(
+        "update-leadership-profile/<int:pk>/",
+        UpdateLeadershipProfile.as_view(),
+        name="update-leadership-profile",
+    ),
+    path(
+        "update-personal-profile/<int:pk>/",
+        UpdatePersonalProfile.as_view(),
+        name="update-personal-profile",
+    ),
+]
