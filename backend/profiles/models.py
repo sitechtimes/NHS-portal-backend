@@ -3,7 +3,7 @@ from users.models import CustomUser
 
 
 class ServiceProfile(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="service_profile"
     )
     recommendation_teacher = models.CharField(null=True, blank=True)
@@ -13,7 +13,7 @@ class ServiceProfile(models.Model):
 
 
 class LeadershipProfile(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="leadership_profile"
     )
     teacher_leadership = models.CharField(null=True, blank=True)
@@ -22,6 +22,17 @@ class LeadershipProfile(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class PersonalProfile(models.Model):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="personal_profile"
+    )
+    gpa = models.FloatField(null=True)
+    character_issues = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name} - Personal Profile"
 
 
 class ServiceActivity(models.Model):

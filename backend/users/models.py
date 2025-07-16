@@ -33,9 +33,16 @@ class CustomUser(AbstractUser):
     osis_last_four_digits = models.CharField()
     official_class = models.CharField()
     email = models.EmailField(unique=True)
+    graduation_year = models.PositiveIntegerField(null=True, blank=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
-    USER_TYPE_CHOICES = [(0, "Student"), (1, "Teacher"), (2, "Admin"), (3, "Superuser")]
+    USER_TYPE_CHOICES = [
+        (0, "Student"),
+        (1, "Teacher"),
+        (2, "Guidance"),
+        (3, "Admin"),
+        (4, "Superuser"),
+    ]
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
 
     objects = CustomUserManager()

@@ -78,6 +78,16 @@ urlpatterns = [
         name="expanded-student-view",
     ),
     path(
+        "guidance/multiple-students-view/",
+        MultipleStudentsView.as_view(),
+        name="multiple-students-view",
+    ),
+    path(
+        "guidance/filter-students-view/",
+        FilterStudentsView.as_view(),
+        name="filter-students-view",
+    ),
+    path(
         "guidance/all-students-view/",
         AllStudentsView.as_view(),
         name="all-students-view",

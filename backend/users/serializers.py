@@ -17,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "osis_last_four_digits",
             "official_class",
+            "graduation_year",
             "email",
             "user_type",
             "password",
@@ -31,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
             last_name=validated_data["last_name"],
             osis_last_four_digits=validated_data["osis_last_four_digits"],
             official_class=validated_data["official_class"],
+            graduation_year=validated_data.get("graduation_year", None),
         )
         return user
 
@@ -58,7 +60,9 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
             "osis_last_four_digits",
             "official_class",
             "email",
+            "graduation_year",
             "user_type",
             "service_profile",
             "leadership_profile",
+            "personal_profile",
         ]

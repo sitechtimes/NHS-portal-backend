@@ -2,6 +2,7 @@ from rest_framework import permissions, viewsets, serializers
 from profiles.models import (
     ServiceProfile,
     LeadershipProfile,
+    PersonalProfile,
     ServiceActivity,
     LeadershipActivity,
 )
@@ -114,11 +115,11 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
 
 
 class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
-    service_activity = ServiceActivitySerializer(many=True, read_only=True)
+    service_activities = ServiceActivitySerializer(many=True)
 
     class Meta:
         model = ServiceProfile
-        fields = ["id", "recommendation_teacher", "service_activity"]
+        fields = ["id", "recommendation_teacher", "service_activities"]
 
 
 class LeadershipProfileSerializer(serializers.ModelSerializer):
@@ -154,7 +155,7 @@ class LeadershipProfileSerializer(serializers.ModelSerializer):
 
 
 class ExpandedLeadershipProfileSerializer(serializers.ModelSerializer):
-    leadership_activity = LeadershipActivitySerializer(many=True, read_only=True)
+    leadership_activities = LeadershipActivitySerializer(many=True)
 
     class Meta:
         model = LeadershipProfile
@@ -163,5 +164,28 @@ class ExpandedLeadershipProfileSerializer(serializers.ModelSerializer):
             "teacher_leadership",
             "teacher_character",
             "teacher_scholarship",
-            "leadership_activity",
+            "leadership_activities",
         ]
+
+
+class PersonalProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonalProfile
+        fields = ["id", "gpa", "character_issues"]
+
+    def create(self, validated_data):
+        user = CustomUser.objects.get(id=validated_data["user_id"])
+        profile = PersonalProfile.objects.create(
+            user=user,
+            gpa=validated_data.get("gpa"),
+            character_issues=validated_data.get("character_issues", False),
+        )
+        return profile
+
+    def update(self, instance, validated_data):
+        instance.gpa = validated_data.get("gpa", instance.gpa)
+        instance.character_issues = validated_data.get(
+            "character_issues", instance.character_issues
+        )
+        instance.save()
+        return instance
