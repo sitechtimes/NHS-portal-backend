@@ -69,6 +69,11 @@ urlpatterns = [
         UpdateLeadershipProfile.as_view(),
         name="update-leadership-profile",
     ),
+    path(
+        "profiles/update-personal-profile/<int:pk>/",
+        UpdatePersonalProfile.as_view(),
+        name="update-personal-profile",
+    ),
     path("users/create-user/", CreateUser.as_view(), name="create-user"),
     path("users/delete-user/<int:pk>/", DeleteUser.as_view(), name="delete-user"),
     path("guidance/student-view/<int:pk>/", StudentView.as_view(), name="view-student"),

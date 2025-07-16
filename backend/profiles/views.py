@@ -9,12 +9,14 @@ from profiles.serializers import (
     LeadershipActivitySerializer,
     ServiceProfileSerializer,
     LeadershipProfileSerializer,
+    PersonalProfileSerializer,
 )
 from profiles.models import (
     ServiceActivity,
     LeadershipActivity,
     ServiceProfile,
     LeadershipProfile,
+    PersonalProfile,
 )
 
 
@@ -63,4 +65,10 @@ class UpdateServiceProfile(UpdateAPIView):
 class UpdateLeadershipProfile(UpdateAPIView):
     queryset = LeadershipProfile.objects.all()
     serializer_class = LeadershipProfileSerializer
+    permission_classes = [AllowAny]
+
+
+class UpdatePersonalProfile(UpdateAPIView):
+    queryset = PersonalProfile.objects.all()
+    serializer_class = PersonalProfileSerializer
     permission_classes = [AllowAny]

@@ -146,7 +146,6 @@ class LeadershipProfileSerializer(serializers.ModelSerializer):
         return validated_data
 
     def update(self, instance, validated_data):
-        # print(validated_data)
         instance.teacher_leadership = validated_data.get("teacher_leadership")
         instance.teacher_character = validated_data.get("teacher_character")
         instance.teacher_scholarship = validated_data.get("teacher_scholarship")
@@ -173,19 +172,8 @@ class PersonalProfileSerializer(serializers.ModelSerializer):
         model = PersonalProfile
         fields = ["id", "gpa", "character_issues"]
 
-    def create(self, validated_data):
-        user = CustomUser.objects.get(id=validated_data["user_id"])
-        profile = PersonalProfile.objects.create(
-            user=user,
-            gpa=validated_data.get("gpa"),
-            character_issues=validated_data.get("character_issues", False),
-        )
-        return profile
-
     def update(self, instance, validated_data):
-        instance.gpa = validated_data.get("gpa", instance.gpa)
-        instance.character_issues = validated_data.get(
-            "character_issues", instance.character_issues
-        )
+        instance.gpa = validated_data.get("gpa")
+        instance.character_issues = validated_data.get("character_issues")
         instance.save()
         return instance

@@ -3,6 +3,7 @@ from users.models import CustomUser
 from profiles.serializers import (
     ExpandedServiceProfileSerializer,
     ExpandedLeadershipProfileSerializer,
+    PersonalProfileSerializer,
 )
 
 
@@ -50,6 +51,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ExpandedUserSerializer(serializers.ModelSerializer):
     service_profile = ExpandedServiceProfileSerializer()
     leadership_profile = ExpandedLeadershipProfileSerializer()
+    personal_profile = PersonalProfileSerializer()
 
     class Meta:
         model = CustomUser
