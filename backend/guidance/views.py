@@ -75,8 +75,6 @@ class FilterStudentsView(ListAPIView):
 
 
 class AllStudentsView(ListAPIView):
+    queryset = CustomUser.objects.filter(user_type="0")
     serializer_class = UserSerializer
     permission_classes = [IsTeacher | IsGuidance | IsAdmin]
-
-    def get_queryset(self):
-        return CustomUser.objects.filter(user_type="0")
