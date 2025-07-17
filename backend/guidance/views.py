@@ -11,7 +11,13 @@ from rest_framework.generics import (
 )
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-from backend.permissions import IsStudent, IsTeacher, IsGuidance, IsAdmin
+from backend.permissions import (
+    IsStudent,
+    IsTeacher,
+    IsGuidance,
+    IsAdmin,
+    IsSelf,
+)
 from users.models import CustomUser
 from users.serializers import UserSerializer, ExpandedUserSerializer
 
@@ -19,18 +25,18 @@ from users.serializers import UserSerializer, ExpandedUserSerializer
 class StudentView(RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [(IsSelf & IsStudent) | IsTeacher | IsGuidance | IsAdmin]
 
 
 class ExpandedStudentView(RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = ExpandedUserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [(IsSelf & IsStudent) | IsTeacher | IsGuidance | IsAdmin]
 
 
 class MultipleStudentsView(ListAPIView):
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
 
     def get_queryset(self):
         return CustomUser.objects.filter(
@@ -40,7 +46,7 @@ class MultipleStudentsView(ListAPIView):
 
 class FilterStudentsView(ListAPIView):
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
 
     def get_queryset(self):
         params = self.request.query_params
@@ -77,7 +83,7 @@ class FilterStudentsView(ListAPIView):
 
 class AllStudentsView(ListAPIView):
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
 
     def get_queryset(self):
         return CustomUser.objects.filter(user_type="0")

@@ -25,3 +25,24 @@ class IsGuidance(BasePermission):
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
         return has_user_type(request.user, "3")
+
+
+class IsSelf(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        return obj == request.user
+
+
+class IsOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user
+
+
+class OwnsServiceProfileOfActivity(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.service_profile.user == request.user
+
+
+class OwnsLeadershipProfileOfActivity(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.leadership_profile.user == request.user

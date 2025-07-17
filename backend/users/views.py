@@ -5,7 +5,8 @@ from rest_framework.generics import (
     ListAPIView,
 )
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from backend.permissions import IsGuidance, IsAdmin
 from users.serializers import UserSerializer
 from users.models import CustomUser
 from rest_framework.response import Response
@@ -20,4 +21,4 @@ class CreateUser(CreateAPIView):
 class DeleteUser(DestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsGuidance | IsAdmin]
