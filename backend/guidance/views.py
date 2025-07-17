@@ -23,13 +23,13 @@ from users.serializers import UserSerializer, ExpandedUserSerializer
 
 
 class StudentView(RetrieveAPIView):
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser.objects.filter(user_type="0")
     serializer_class = UserSerializer
     permission_classes = [(IsSelf & IsStudent) | IsTeacher | IsGuidance | IsAdmin]
 
 
 class ExpandedStudentView(RetrieveAPIView):
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser.objects.filter(user_type="0")
     serializer_class = ExpandedUserSerializer
     permission_classes = [(IsSelf & IsStudent) | IsTeacher | IsGuidance | IsAdmin]
 
@@ -51,25 +51,16 @@ class FilterStudentsView(ListAPIView):
     def get_queryset(self):
         params = self.request.query_params
         queryset = CustomUser.objects.filter(user_type="0")
-        first_name = params.get("first_name")
-        last_name = params.get("last_name")
-        osis_last_four_digits = params.get("osis_last_four_digits")
-        official_class = params.get("official_class")
-        email = params.get("email")
-        graduation_year = params.get("graduation_year")
-
-        if first_name:
-            queryset = queryset.filter(first_name__icontains=first_name)
-        if last_name:
-            queryset = queryset.filter(last_name__icontains=last_name)
-        if osis_last_four_digits:
-            queryset = queryset.filter(osis_last_four_digits=osis_last_four_digits)
-        if official_class:
-            queryset = queryset.filter(official_class=official_class)
-        if email:
-            queryset = queryset.filter(email__icontains=email)
-        if graduation_year:
-            queryset = queryset.filter(graduation_year=graduation_year)
+        for param in params:
+            if param in [
+                "first_name",
+                "last_name",
+                "osis_last_four_digits",
+                "official_class",
+                "email",
+                "graduation_year",
+            ]:
+                queryset = queryset.filter(**{f"{param}__icontains": params.get(param)})
 
         return queryset
 
