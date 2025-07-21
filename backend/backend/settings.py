@@ -101,6 +101,14 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "sam.kipnis@gmail.com"
+EMAIL_HOST_PASSWORD = "ogbf gsbg yoko vqxn"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 ROOT_URLCONF = "backend.urls"
 
 AUTH_USER_MODEL = "users.CustomUser"

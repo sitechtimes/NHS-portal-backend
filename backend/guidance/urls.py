@@ -23,4 +23,12 @@ urlpatterns = [
         AllStudentsView.as_view(),
         name="all-students-view",
     ),
+    path(
+        "give-recommendation/", GiveRecommendation.as_view(), name="give-recommendation"
+    ),
+    path(
+        "create-announcement/",
+        CreateAnnouncement.as_view(),
+        name="create-announcement",
+    ),
 ]

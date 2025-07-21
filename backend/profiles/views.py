@@ -3,10 +3,11 @@ from rest_framework.generics import (
     DestroyAPIView,
     UpdateAPIView,
 )
-from rest_framework.permissions import AllowAny, IsAdminUser
 from backend.permissions import (
     IsStudent,
     IsOwner,
+    IsGuidance,
+    IsAdmin,
     OwnsServiceProfileOfActivity,
     OwnsLeadershipProfileOfActivity,
 )
@@ -35,13 +36,13 @@ class CreateServiceActivity(CreateAPIView):
 class DeleteServiceActivity(DestroyAPIView):
     queryset = ServiceActivity.objects.all()
     serializer_class = ServiceActivitySerializer
-    permission_classes = [OwnsServiceProfileOfActivity]
+    permission_classes = [OwnsServiceProfileOfActivity | IsGuidance | IsAdmin]
 
 
 class UpdateServiceActivity(UpdateAPIView):
     queryset = ServiceActivity.objects.all()
     serializer_class = ServiceActivitySerializer
-    permission_classes = [OwnsServiceProfileOfActivity]
+    permission_classes = [OwnsServiceProfileOfActivity | IsGuidance | IsAdmin]
 
 
 class CreateLeadershipActivity(CreateAPIView):
@@ -53,28 +54,28 @@ class CreateLeadershipActivity(CreateAPIView):
 class DeleteLeadershipActivity(DestroyAPIView):
     queryset = LeadershipActivity.objects.all()
     serializer_class = LeadershipActivitySerializer
-    permission_classes = [OwnsLeadershipProfileOfActivity]
+    permission_classes = [OwnsLeadershipProfileOfActivity | IsGuidance | IsAdmin]
 
 
 class UpdateLeadershipActivity(UpdateAPIView):
     queryset = LeadershipActivity.objects.all()
     serializer_class = LeadershipActivitySerializer
-    permission_classes = [OwnsLeadershipProfileOfActivity]
+    permission_classes = [OwnsLeadershipProfileOfActivity | IsGuidance | IsAdmin]
 
 
 class UpdateServiceProfile(UpdateAPIView):
     queryset = ServiceProfile.objects.all()
     serializer_class = ServiceProfileSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [IsOwner | IsGuidance | IsAdmin]
 
 
 class UpdateLeadershipProfile(UpdateAPIView):
     queryset = LeadershipProfile.objects.all()
     serializer_class = LeadershipProfileSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [IsOwner | IsGuidance | IsAdmin]
 
 
 class UpdatePersonalProfile(UpdateAPIView):
     queryset = PersonalProfile.objects.all()
     serializer_class = PersonalProfileSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [IsOwner | IsGuidance | IsAdmin]

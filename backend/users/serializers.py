@@ -16,7 +16,6 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "first_name",
             "last_name",
-            "osis_last_four_digits",
             "official_class",
             "graduation_year",
             "email",
@@ -31,7 +30,6 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data["password"],
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
-            osis_last_four_digits=validated_data["osis_last_four_digits"],
             official_class=validated_data["official_class"],
             graduation_year=validated_data.get("graduation_year", None),
         )
@@ -44,6 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
         return validated_data
 
     def get(self, instance):
+        lookup_field = "email"
         user = CustomUser.objects.get(id=instance.get("pk"))
         return user
 
@@ -59,7 +58,6 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
             "id",
             "first_name",
             "last_name",
-            "osis_last_four_digits",
             "official_class",
             "email",
             "graduation_year",

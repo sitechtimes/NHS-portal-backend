@@ -13,13 +13,8 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ServiceActivity
-        fields = [
-            "title",
-            "supervisor",
-            "screenshot_link",
-            "grades",
-            "hours",
-        ]
+        fields = ["title", "supervisor", "grades", "hours", "image"]
+        read_only_fields = ["id", "service_profile"]
 
     def create(self, validated_data):
         user = self.context["request"].user
@@ -27,9 +22,9 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
         activity = ServiceActivity.objects.create(
             title=validated_data["title"],
             supervisor=validated_data["supervisor"],
-            screenshot_link=validated_data["screenshot_link"],
             grades=validated_data["grades"],
             hours=validated_data["hours"],
+            image=validated_data["image"],
             service_profile=service_profile,
         )
         return activity
@@ -44,9 +39,9 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
         # service_profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
         instance.title = validated_data.get("title")
         instance.supervisor = validated_data.get("supervisor")
-        instance.screenshot_link = validated_data.get("screenshot_link")
         instance.grades = validated_data.get("grades")
         instance.hours = validated_data.get("hours")
+        instance.image = validated_data.get("image")
         instance.save()
         return instance
 
@@ -54,12 +49,8 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
 class LeadershipActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = LeadershipActivity
-        fields = [
-            "title",
-            "supervisor",
-            "screenshot_link",
-            "description",
-        ]
+        fields = ["title", "supervisor", "description", "image"]
+        read_only_fields = ["id", "leadership_profile"]
 
     def create(self, validated_data):
         user = self.context["request"].user
@@ -67,8 +58,8 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
         activity = LeadershipActivity.objects.create(
             title=validated_data["title"],
             supervisor=validated_data["supervisor"],
-            screenshot_link=validated_data["screenshot_link"],
             description=validated_data["description"],
+            image=validated_data["image"],
             leadership_profile=leadership_profile,
         )
         return activity
@@ -83,8 +74,8 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
         # service_profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
         instance.title = validated_data.get("title")
         instance.supervisor = validated_data.get("supervisor")
-        instance.screenshot_link = validated_data.get("screenshot_link")
         instance.description = validated_data.get("description")
+        instance.image = validated_data.get("image")
         instance.save()
         return instance
 
@@ -93,6 +84,7 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceProfile
         fields = ["id", "recommendation_teacher"]
+        read_only_fields = ["recommendation_given", "user"]
 
     def create(self, validated_data):
         user = CustomUser.objects.get(id=validated_data["user_id"])
@@ -108,7 +100,6 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
         return validated_data
 
     def update(self, instance, validated_data):
-        # service_profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
         instance.recommendation_teacher = validated_data.get("recommendation_teacher")
         instance.save()
         return instance
@@ -119,7 +110,13 @@ class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ServiceProfile
-        fields = ["id", "recommendation_teacher", "service_activities"]
+        fields = [
+            "id",
+            "recommendation_teacher",
+            "service_activities",
+            "recommendation_given",
+        ]
+        read_only_fields = ["user"]
 
 
 class LeadershipProfileSerializer(serializers.ModelSerializer):
@@ -130,6 +127,12 @@ class LeadershipProfileSerializer(serializers.ModelSerializer):
             "teacher_leadership",
             "teacher_character",
             "teacher_scholarship",
+        ]
+        read_only_fields = [
+            "leadership_recommendation_given",
+            "character_recommendation_given",
+            "scholarship_recommendation_given",
+            "user",
         ]
 
     def create(self, validated_data):
@@ -161,16 +164,21 @@ class ExpandedLeadershipProfileSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "teacher_leadership",
+            "leadership_recommendation_given",
             "teacher_character",
+            "character_recommendation_given",
             "teacher_scholarship",
+            "scholarship_recommendation_given",
             "leadership_activities",
         ]
+        read_only_fields = ["user"]
 
 
 class PersonalProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonalProfile
         fields = ["id", "gpa", "character_issues"]
+        read_only_fields = ["user"]
 
     def update(self, instance, validated_data):
         instance.gpa = validated_data.get("gpa")

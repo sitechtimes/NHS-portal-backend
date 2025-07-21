@@ -30,7 +30,6 @@ class CustomUser(AbstractUser):
     username = None
     first_name = models.CharField()
     last_name = models.CharField()
-    osis_last_four_digits = models.CharField()
     official_class = models.CharField()
     email = models.EmailField(unique=True)
     graduation_year = models.PositiveIntegerField(null=True, blank=True)

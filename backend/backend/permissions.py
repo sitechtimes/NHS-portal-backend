@@ -2,8 +2,6 @@ from rest_framework.permissions import BasePermission
 
 
 def has_user_type(user, user_type):
-    print(user.is_authenticated, user.user_type, user_type)
-    print(user.is_authenticated and int(user.user_type) >= int(user_type))
     return user.is_authenticated and int(user.user_type) >= int(user_type)
 
 
@@ -46,3 +44,12 @@ class OwnsServiceProfileOfActivity(BasePermission):
 class OwnsLeadershipProfileOfActivity(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.leadership_profile.user == request.user
+
+
+class HasLongName(BasePermission):
+    """
+    Custom permission to check if the user has a long name.
+    """
+
+    def has_permission(self, request, view):
+        return len(request.user.get_full_name()) > 10
