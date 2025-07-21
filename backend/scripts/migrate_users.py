@@ -68,8 +68,8 @@ def run(*args):
         for user in users_to_create:
             user.save()
 
-    print(f"✅ Migrated {len(users_to_create)} users")
-    print(f"⏭ Skipped {skipped} rows")
+    print(f"Migrated {len(users_to_create)} users")
+    print(f"Skipped {skipped} rows")
     print(
-        f"🔐 Password mode: {'Fake (Insecure, do not use for production)' if use_fake_passwords else 'REAL (Secure)'}"
+        f"Password mode: {'Fake (Insecure, do not use for production)' if use_fake_passwords else 'REAL (Secure)'}"
     )
