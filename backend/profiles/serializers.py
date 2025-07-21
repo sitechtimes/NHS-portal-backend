@@ -14,7 +14,7 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceActivity
         fields = ["title", "supervisor", "grades", "hours", "image"]
-        read_only_fields = ["id", "service_profile"]
+        read_only_fields = ["service_profile"]
 
     def create(self, validated_data):
         user = self.context["request"].user
@@ -50,7 +50,7 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = LeadershipActivity
         fields = ["title", "supervisor", "description", "image"]
-        read_only_fields = ["id", "leadership_profile"]
+        read_only_fields = ["leadership_profile"]
 
     def create(self, validated_data):
         user = self.context["request"].user
@@ -71,7 +71,6 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
         return validated_data
 
     def update(self, instance, validated_data):
-        # service_profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
         instance.title = validated_data.get("title")
         instance.supervisor = validated_data.get("supervisor")
         instance.description = validated_data.get("description")
