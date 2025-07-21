@@ -30,8 +30,8 @@ class CustomUser(AbstractUser):
     username = None
     first_name = models.CharField()
     last_name = models.CharField()
-    official_class = models.CharField()
     email = models.EmailField(unique=True)
+    official_class = models.CharField()
     graduation_year = models.PositiveIntegerField(null=True, blank=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
