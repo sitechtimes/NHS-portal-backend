@@ -39,9 +39,11 @@ class ExpandedStudentView(RetrieveAPIView):
 class MultipleStudentsView(ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsGuidance | IsAdmin]
-    queryset = CustomUser.objects.filter(
-        user_type="0", id__in=json.loads(self.request.query_params.get("ids"))
-    )
+
+    def get_queryset(self):
+        return CustomUser.objects.filter(
+            user_type="0", id__in=json.loads(self.request.query_params.get("ids"))
+        )
 
 
 class FilterStudentsView(ListAPIView):
