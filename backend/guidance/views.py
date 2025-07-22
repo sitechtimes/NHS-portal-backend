@@ -75,23 +75,13 @@ class AllStudentsView(ListAPIView):
 
 class GiveRecommendation(GenericAPIView):
     permission_classes = [IsTeacher | IsGuidance | IsAdmin]
-    serializer_class = ExpandedUserSerializer  # for returning user data
+    serializer_class = ExpandedUserSerializer
 
     def post(self, request):
         student_id = request.data.get("student_id")
         recommendation_type = request.data.get("recommendation_type")
 
-        if not student_id or not recommendation_type:
-            return Response(
-                {"detail": "Missing student_id or recommendation_type."}, status=400
-            )
-
-        try:
-            student = CustomUser.objects.get(id=student_id, user_type="0")
-        except CustomUser.DoesNotExist:
-            return Response({"detail": "Student not found."}, status=404)
-
-        profile = None
+        student = CustomUser.objects.get(id=student_id, user_type="0")
 
         if recommendation_type == "service":
             profile = student.service_profile
@@ -104,9 +94,6 @@ class GiveRecommendation(GenericAPIView):
                 profile.character_recommendation_given = True
             elif recommendation_type == "scholarship":
                 profile.scholarship_recommendation_given = True
-        else:
-            return Response({"detail": "Invalid recommendation_type."}, status=400)
-
         profile.save()
 
         serializer = self.get_serializer(student)
