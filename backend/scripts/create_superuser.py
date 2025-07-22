@@ -6,5 +6,5 @@ def run():
     print("\nCreating superuser...")
     user_manager = CustomUserManager()
     user = user_manager.create_superuser(email="admin@example.com", password="admin")
-    print(f"Superuser created: {user.email}")
+    print(f"Superuser created:\nemail: {user.email},\npassword: admin")
     return user
