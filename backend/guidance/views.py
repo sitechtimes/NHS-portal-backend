@@ -8,6 +8,7 @@ from rest_framework.generics import (
     DestroyAPIView,
     RetrieveAPIView,
     ListAPIView,
+    GenericAPIView,
 )
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -72,15 +73,26 @@ class AllStudentsView(ListAPIView):
     permission_classes = [IsGuidance | IsAdmin]
 
 
-class GiveRecommendation(APIView):
+class GiveRecommendation(GenericAPIView):
     permission_classes = [IsTeacher | IsGuidance | IsAdmin]
+    serializer_class = ExpandedUserSerializer  # for returning user data
 
     def post(self, request):
-        print(request.data)
         student_id = request.data.get("student_id")
         recommendation_type = request.data.get("recommendation_type")
 
-        student = CustomUser.objects.get(id=student_id, user_type="0")
+        if not student_id or not recommendation_type:
+            return Response(
+                {"detail": "Missing student_id or recommendation_type."}, status=400
+            )
+
+        try:
+            student = CustomUser.objects.get(id=student_id, user_type="0")
+        except CustomUser.DoesNotExist:
+            return Response({"detail": "Student not found."}, status=404)
+
+        profile = None
+
         if recommendation_type == "service":
             profile = student.service_profile
             profile.recommendation_given = True
@@ -92,10 +104,13 @@ class GiveRecommendation(APIView):
                 profile.character_recommendation_given = True
             elif recommendation_type == "scholarship":
                 profile.scholarship_recommendation_given = True
+        else:
+            return Response({"detail": "Invalid recommendation_type."}, status=400)
 
         profile.save()
 
-        return Response(ExpandedUserSerializer(student).data, status=200)
+        serializer = self.get_serializer(student)
+        return Response(serializer.data, status=200)
 
 
 class CreateAnnouncement(CreateAPIView):

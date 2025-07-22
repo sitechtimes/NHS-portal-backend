@@ -44,12 +44,3 @@ class OwnsServiceProfileOfActivity(BasePermission):
 class OwnsLeadershipProfileOfActivity(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.leadership_profile.user == request.user
-
-
-class HasLongName(BasePermission):
-    """
-    Custom permission to check if the user has a long name.
-    """
-
-    def has_permission(self, request, view):
-        return len(request.user.get_full_name()) > 10
