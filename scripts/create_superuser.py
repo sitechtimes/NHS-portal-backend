@@ -1,10 +1,11 @@
-from users.models import CustomUserManager
+from users.models import CustomUser
 import sys
 
 
 def run():
     print("\nCreating superuser...")
-    user_manager = CustomUserManager()
-    user = user_manager.create_superuser(email="admin@example.com", password="admin")
+    user = CustomUser.objects.create_superuser(
+        email="admin@example.com", password="admin"
+    )
     print(f"Superuser created:\nemail: {user.email},\npassword: admin")
     return user
