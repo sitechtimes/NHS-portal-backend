@@ -8,7 +8,7 @@ WORKDIR /
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
-
+RUN py manage.py runscript reset_db
 # Expose port
 EXPOSE 8000
 
