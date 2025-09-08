@@ -21,7 +21,7 @@ class CreateUser(CreateAPIView):
 class DeleteUser(DestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsSelf | IsGuidance | IsAdmin]
+    permission_classes = [IsGuidance | IsAdmin]
 
 
 class RetrieveUser(APIView):
