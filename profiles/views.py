@@ -17,6 +17,7 @@ from profiles.serializers import (
     ServiceProfileSerializer,
     LeadershipProfileSerializer,
     PersonalProfileSerializer,
+    GPARecordSerializer,
 )
 from profiles.models import (
     ServiceActivity,
@@ -24,6 +25,7 @@ from profiles.models import (
     ServiceProfile,
     LeadershipProfile,
     PersonalProfile,
+    GPARecord,
 )
 
 
@@ -78,4 +80,10 @@ class UpdateLeadershipProfile(UpdateAPIView):
 class UpdatePersonalProfile(UpdateAPIView):
     queryset = PersonalProfile.objects.all()
     serializer_class = PersonalProfileSerializer
+    permission_classes = [IsOwner | IsGuidance | IsAdmin]
+
+
+class CreateGPARecord(CreateAPIView):
+    queryset = GPARecord.objects.all()
+    serializer_class = GPARecordSerializer
     permission_classes = [IsOwner | IsGuidance | IsAdmin]

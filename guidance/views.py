@@ -104,3 +104,9 @@ class CreateAnnouncement(CreateAPIView):
     queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
     permission_classes = [IsGuidance | IsAdmin]
+
+
+class AnnouncementView(ListAPIView):
+    queryset = Announcement.objects.all().order_by("-created_at")
+    serializer_class = AnnouncementSerializer
+    permission_classes = [AllowAny]

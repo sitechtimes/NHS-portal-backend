@@ -31,4 +31,5 @@ urlpatterns = [
         CreateAnnouncement.as_view(),
         name="create-announcement",
     ),
+    path("announcements/", AnnouncementView.as_view(), name="announcements"),
 ]

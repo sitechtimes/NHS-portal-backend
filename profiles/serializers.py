@@ -5,6 +5,7 @@ from profiles.models import (
     PersonalProfile,
     ServiceActivity,
     LeadershipActivity,
+    GPARecord,
 )
 from users.models import CustomUser
 
@@ -173,14 +174,32 @@ class ExpandedLeadershipProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ["user"]
 
 
+class GPARecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GPARecord
+        fields = ["id", "gpa", "semester", "year"]
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        personal_profile = PersonalProfile.objects.get(user=user)
+        gpa_record = GPARecord.objects.create(
+            personal_profile=personal_profile,
+            gpa=validated_data["gpa"],
+            year=validated_data["year"],
+            semester=validated_data["semester"],
+        )
+        return gpa_record
+
+
 class PersonalProfileSerializer(serializers.ModelSerializer):
+    gpa_records = GPARecordSerializer(many=True, read_only=True)
+
     class Meta:
         model = PersonalProfile
-        fields = ["id", "gpa", "character_issues"]
+        fields = ["id", "gpa_records", "character_issues"]
         read_only_fields = ["user"]
 
     def update(self, instance, validated_data):
-        instance.gpa = validated_data.get("gpa")
         instance.character_issues = validated_data.get("character_issues")
         instance.save()
         return instance

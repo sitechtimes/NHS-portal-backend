@@ -47,4 +47,9 @@ urlpatterns = [
         UpdatePersonalProfile.as_view(),
         name="update-personal-profile",
     ),
+    path(
+        "create-gpa-record/",
+        CreateGPARecord.as_view(),
+        name="create-gpa-record",
+    ),
 ]

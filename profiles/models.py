@@ -32,7 +32,6 @@ class PersonalProfile(models.Model):
     user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="personal_profile"
     )
-    gpa = models.FloatField(null=True)
     character_issues = models.BooleanField(default=False)
 
     def __str__(self):
@@ -66,3 +65,17 @@ class LeadershipActivity(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class GPARecord(models.Model):
+    personal_profile = models.ForeignKey(
+        PersonalProfile,
+        on_delete=models.CASCADE,
+        related_name="gpa_records",
+    )
+    semester = models.IntegerField()
+    year = models.IntegerField()
+    gpa = models.FloatField()
+
+    def __str__(self):
+        return f"{self.year} Semester {self.semester} - {self.gpa}"

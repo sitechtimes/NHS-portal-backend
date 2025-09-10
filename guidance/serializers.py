@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Announcement
         fields = [
@@ -15,6 +16,13 @@ class AnnouncementSerializer(serializers.ModelSerializer):
             "send_immediately",
         ]
         read_only_fields = ["id", "created_at"]
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep.pop("recipient_emails", None)
+        rep.pop("send_immediately", None)
+
+        return rep
 
     def create(self, validated_data):
         if not validated_data.get("recipient_emails"):
