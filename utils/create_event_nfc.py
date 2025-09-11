@@ -2,7 +2,7 @@ import requests
 
 
 def create_event_nfc(name, time_start, time_end, description):
-    url = "http://localhost:8000/api/backend/events/"
+    url = "http://localhost:9000/events/create/"
     payload = {
         "name": name,
         "timeStart": time_start,
