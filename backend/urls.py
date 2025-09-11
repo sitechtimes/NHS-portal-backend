@@ -24,10 +24,12 @@ from django.contrib import admin
 from django.urls import path, include
 from users.views import *
 from profiles.views import *
+from .views import *
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("create-event/", CreateEventView.as_view(), name="create-event"),
     path("api/token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("guidance/", include("guidance.urls")),

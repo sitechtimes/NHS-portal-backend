@@ -1,0 +1,15 @@
+from django.db import models
+from users.models import CustomUser
+
+
+class ServiceEvent(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    timeStart = models.DateTimeField()
+    timeEnd = models.DateTimeField()
+    creator = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="created_events"
+    )
+
+    def __str__(self):
+        return self.name

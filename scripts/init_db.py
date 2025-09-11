@@ -10,7 +10,8 @@ def run():
         "migrate profiles",
         "makemigrations guidance",
         "migrate guidance",
-        "makemigrations",
+        "makemigrations backend",
+        "migrate backend",
         "migrate",
     ]
 
