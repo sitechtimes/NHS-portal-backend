@@ -1,6 +1,7 @@
 from os import read
 from rest_framework import serializers
 from .models import ServiceEvent
+from profiles.models import EventParticipation, ServiceProfile
 from users.models import CustomUser
 import json
 from rest_framework.response import Response
@@ -25,7 +26,6 @@ class EventSerializer(serializers.ModelSerializer):
             name=validated_data["name"],
             time_start=validated_data["timeStart"].isoformat(),
             time_end=validated_data["timeEnd"].isoformat(),
-            description=validated_data["description"],
         )
         if "error" in created:
             raise serializers.ValidationError(created["error"])
@@ -36,5 +36,24 @@ class EventSerializer(serializers.ModelSerializer):
                 timeStart=validated_data["timeStart"],
                 timeEnd=validated_data["timeEnd"],
                 creator=request.user,
+                nfc_id=created["nfc_id"],
             )
         return event
+
+
+class EventParticipationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventParticipation
+        fields = [
+            "event",
+            "service_profile",
+        ]
+        read_only_fields = ["user"]
+
+    def create(self, validated_data):
+        service_profile = ServiceProfile.objects.get(user=validated_data["user"])
+        participation = EventParticipation.objects.create(
+            event=validated_data["event"],
+            service_profile=service_profile,
+        )
+        return participation

@@ -1,3 +1,4 @@
+import email
 from rest_framework import permissions, viewsets, serializers
 from profiles.models import (
     ServiceProfile,
@@ -6,6 +7,7 @@ from profiles.models import (
     ServiceActivity,
     LeadershipActivity,
     GPARecord,
+    EventParticipation,
 )
 from users.models import CustomUser
 
@@ -45,6 +47,21 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
         instance.image = validated_data.get("image")
         instance.save()
         return instance
+
+
+class EventParticipationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventParticipation
+        fields = ["service_event", "service_profile"]
+
+    def create(self, validated_data):
+        student = CustomUser.objects.get(email=validated_data["email"])
+        service_profile = ServiceProfile.objects.get(user=student)
+        participation = EventParticipation.objects.create(
+            service_event=validated_data["service_event"],
+            service_profile=service_profile,
+        )
+        return participation
 
 
 class LeadershipActivitySerializer(serializers.ModelSerializer):
@@ -107,14 +124,16 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
 
 class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
     service_activities = ServiceActivitySerializer(many=True)
+    event_participations = EventParticipationSerializer(many=True)
 
     class Meta:
         model = ServiceProfile
         fields = [
             "id",
             "recommendation_teacher",
-            "service_activities",
             "recommendation_given",
+            "service_activities",
+            "event_participations",
         ]
         read_only_fields = ["user"]
 

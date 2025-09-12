@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import CustomUser
+from backend.models import ServiceEvent
 
 
 class ServiceProfile(models.Model):
@@ -50,6 +51,15 @@ class ServiceActivity(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class EventParticipation(models.Model):
+    service_event = models.ForeignKey(
+        ServiceEvent, on_delete=models.CASCADE, related_name="participations"
+    )
+    service_profile = models.ForeignKey(
+        ServiceProfile, on_delete=models.CASCADE, related_name="event_participations"
+    )
 
 
 class LeadershipActivity(models.Model):

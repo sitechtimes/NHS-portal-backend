@@ -10,6 +10,7 @@ class ServiceEvent(models.Model):
     creator = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="created_events"
     )
+    nfc_id = models.IntegerField()
 
     def __str__(self):
         return self.name

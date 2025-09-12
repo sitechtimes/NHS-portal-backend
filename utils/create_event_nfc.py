@@ -1,8 +1,15 @@
 import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 def create_event_nfc(name, time_start, time_end, description):
-    url = "http://localhost:9000/events/create/"
+    url = f"{os.getenv(
+    "NFC_BACKEND_URL",
+)
+}/create-event/"
     payload = {
         "name": name,
         "timeStart": time_start,
