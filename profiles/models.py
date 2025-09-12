@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import CustomUser
-from backend.models import ServiceEvent
+from events.models import ServiceEvent
 
 
 class ServiceProfile(models.Model):

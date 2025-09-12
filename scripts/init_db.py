@@ -6,8 +6,8 @@ def run():
     migration_commands = [
         "makemigrations users",
         "migrate users",
-        "makemigrations backend",
-        "migrate backend",
+        "makemigrations events",
+        "migrate events",
         "makemigrations profiles",
         "migrate profiles",
         "makemigrations guidance",

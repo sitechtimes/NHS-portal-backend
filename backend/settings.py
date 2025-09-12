@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     "users",
     "profiles",
     "guidance",
-    "backend",
+    "events",
 ]
 
 MIDDLEWARE = [

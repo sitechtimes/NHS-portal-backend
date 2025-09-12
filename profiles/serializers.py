@@ -1,6 +1,5 @@
 import email
 from os import read
-from backend.models import ServiceEvent
 from rest_framework import permissions, viewsets, serializers
 from profiles.models import (
     ServiceProfile,
@@ -50,22 +49,6 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
         instance.image = validated_data.get("image")
         instance.save()
         return instance
-
-
-class EventParticipationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EventParticipation
-        fields = ["service_event", "service_profile"]
-
-    def create(self, validated_data):
-        student = CustomUser.objects.get(email=validated_data["email"])
-        service_profile = ServiceProfile.objects.get(user=student)
-        service_event = ServiceEvent.objects.get(nfc_id=validated_data["id"])
-        participation = EventParticipation.objects.create(
-            service_event=service_event,
-            service_profile=service_profile,
-        )
-        return participation
 
 
 class LeadershipActivitySerializer(serializers.ModelSerializer):
@@ -124,6 +107,15 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
         instance.recommendation_teacher = validated_data.get("recommendation_teacher")
         instance.save()
         return instance
+
+
+class EventParticipationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventParticipation
+        fields = [
+            "service_event",
+            "service_profile",
+        ]
 
 
 class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
