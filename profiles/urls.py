@@ -52,4 +52,9 @@ urlpatterns = [
         CreateGPARecord.as_view(),
         name="create-gpa-record",
     ),
+    path(
+        "create-event-participation/",
+        CreateEventParticipation.as_view(),
+        name="create-event-participation",
+    ),
 ]

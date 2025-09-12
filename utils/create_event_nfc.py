@@ -5,7 +5,7 @@ import os
 load_dotenv()
 
 
-def create_event_nfc(name, time_start, time_end, description):
+def create_event_nfc(name, time_start, time_end):
     url = f"{os.getenv(
     "NFC_BACKEND_URL",
 )
@@ -14,7 +14,6 @@ def create_event_nfc(name, time_start, time_end, description):
         "name": name,
         "timeStart": time_start,
         "timeEnd": time_end,
-        "description": description,
     }
     response = requests.post(url, json=payload, timeout=10)
     if response.status_code == 201:

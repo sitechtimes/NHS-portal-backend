@@ -1,10 +1,13 @@
 import email
+from os import read
+from backend.models import ServiceEvent
 from rest_framework import permissions, viewsets, serializers
 from profiles.models import (
     ServiceProfile,
     LeadershipProfile,
     PersonalProfile,
     ServiceActivity,
+    ServiceEvent,
     LeadershipActivity,
     GPARecord,
     EventParticipation,
@@ -57,8 +60,9 @@ class EventParticipationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         student = CustomUser.objects.get(email=validated_data["email"])
         service_profile = ServiceProfile.objects.get(user=student)
+        service_event = ServiceEvent.objects.get(nfc_id=validated_data["id"])
         participation = EventParticipation.objects.create(
-            service_event=validated_data["service_event"],
+            service_event=service_event,
             service_profile=service_profile,
         )
         return participation

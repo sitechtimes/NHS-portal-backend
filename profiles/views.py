@@ -18,6 +18,7 @@ from profiles.serializers import (
     LeadershipProfileSerializer,
     PersonalProfileSerializer,
     GPARecordSerializer,
+    EventParticipationSerializer,
 )
 from profiles.models import (
     ServiceActivity,
@@ -26,6 +27,7 @@ from profiles.models import (
     LeadershipProfile,
     PersonalProfile,
     GPARecord,
+    EventParticipation,
 )
 
 
@@ -87,3 +89,8 @@ class CreateGPARecord(CreateAPIView):
     queryset = GPARecord.objects.all()
     serializer_class = GPARecordSerializer
     permission_classes = [IsOwner | IsGuidance | IsAdmin]
+
+
+class CreateEventParticipation(CreateAPIView):
+    queryset = EventParticipation.objects.all()
+    serializer_class = EventParticipationSerializer
