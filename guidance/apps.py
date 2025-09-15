@@ -2,5 +2,8 @@ from django.apps import AppConfig
 
 
 class GuidanceConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'guidance'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "guidance"
+
+    def ready(self):
+        import guidance.signals

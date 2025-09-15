@@ -1,5 +1,6 @@
+from requests import delete
 from rest_framework import serializers
-from .models import Announcement
+from .models import Announcement, BiographicalQuestion, BiographicalQuestionInstance
 from users.models import CustomUser
 import json
 from rest_framework.response import Response
@@ -54,3 +55,34 @@ class AnnouncementSerializer(serializers.ModelSerializer):
                     status=500,
                 )
         return announcement
+
+
+class BiographicalQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BiographicalQuestion
+        fields = ["question_text", "answer_type", "options"]
+
+    def create(self, validated_data):
+        if validated_data.get("answer_type") in ["dropdown", "checkbox"]:
+            question = BiographicalQuestion.objects.create(
+                question_text=validated_data["question_text"],
+                answer_type=validated_data["answer_type"],
+                options=json.dumps(validated_data["options"]),
+            )
+        else:
+            question = BiographicalQuestion.objects.create(
+                question_text=validated_data["question_text"],
+                answer_type=validated_data["answer_type"],
+            )
+        return question
+
+
+class BiographicalQuestionInstanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BiographicalQuestionInstance
+        fields = ["user", "question", "answer"]
+
+    def update(self, instance, validated_data):
+        instance.answer = validated_data.get("answer")
+        instance.save()
+        return instance

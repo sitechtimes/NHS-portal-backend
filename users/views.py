@@ -18,6 +18,9 @@ class CreateUser(CreateAPIView):
     permission_classes = [AllowAny]
 
 
+# When created, a signal creates the profiles
+
+
 class DeleteUser(DestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer

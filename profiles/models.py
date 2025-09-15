@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import CustomUser
 from events.models import ServiceEvent
+from guidance.models import BiographicalQuestionInstance
 
 
 class ServiceProfile(models.Model):

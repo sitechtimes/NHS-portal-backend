@@ -32,4 +32,19 @@ urlpatterns = [
         name="create-announcement",
     ),
     path("announcements/", AnnouncementView.as_view(), name="announcements"),
+    path(
+        "create-biographical-question/",
+        CreateBiographicalQuestion.as_view(),
+        name="create-biographical-question",
+    ),
+    path(
+        "biographical-questions/",
+        BiographicalQuestionsView.as_view(),
+        name="biographical-questions",
+    ),
+    path(
+        "submit-question-instance/<int:pk>/",
+        SubmitQuestionInstanceView.as_view(),
+        name="submit-question-instance",
+    ),
 ]

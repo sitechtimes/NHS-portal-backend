@@ -5,6 +5,8 @@ from profiles.serializers import (
     ExpandedLeadershipProfileSerializer,
     PersonalProfileSerializer,
 )
+from guidance.models import BiographicalQuestionInstance
+from guidance.serializers import BiographicalQuestionInstanceSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -51,6 +53,7 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
     service_profile = ExpandedServiceProfileSerializer()
     leadership_profile = ExpandedLeadershipProfileSerializer()
     personal_profile = PersonalProfileSerializer()
+    biographical_question_instances = BiographicalQuestionInstanceSerializer(many=True)
 
     class Meta:
         model = CustomUser
@@ -65,4 +68,5 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
             "service_profile",
             "leadership_profile",
             "personal_profile",
+            "biographical_question_instances",
         ]

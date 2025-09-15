@@ -1,4 +1,5 @@
 import json
+from typing import Generic
 from django.shortcuts import render
 from django.core.mail import send_mass_mail
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from rest_framework.generics import (
     RetrieveAPIView,
     ListAPIView,
     GenericAPIView,
+    UpdateAPIView,
 )
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -21,8 +23,12 @@ from backend.permissions import (
 )
 from users.models import CustomUser
 from users.serializers import UserSerializer, ExpandedUserSerializer
-from .models import Announcement
-from .serializers import AnnouncementSerializer
+from .models import Announcement, BiographicalQuestion, BiographicalQuestionInstance
+from .serializers import (
+    AnnouncementSerializer,
+    BiographicalQuestionSerializer,
+    BiographicalQuestionInstanceSerializer,
+)
 
 
 class StudentView(RetrieveAPIView):
@@ -110,3 +116,36 @@ class AnnouncementView(ListAPIView):
     queryset = Announcement.objects.all().order_by("-created_at")
     serializer_class = AnnouncementSerializer
     permission_classes = [AllowAny]
+
+
+class CreateBiographicalQuestion(CreateAPIView):
+    queryset = BiographicalQuestion.objects.all()
+    serializer_class = BiographicalQuestionSerializer
+    permission_classes = [IsGuidance | IsAdmin]
+
+
+# When created, a signal creates the instances for all students
+
+
+class BiographicalQuestionsView(ListAPIView):
+    queryset = BiographicalQuestion.objects.all()
+    serializer_class = BiographicalQuestionSerializer
+    permission_classes = [IsGuidance | IsAdmin]
+
+
+# class SubmitQuestionView(UpdateAPIView):
+#     queryset = BiographicalQuestionInstance.objects.all()
+#     serializer_class = BiographicalQuestionInstanceSerializer
+#     permission_classes = [IsGuidance | IsAdmin]
+
+#     def update(self, request, *args, **kwargs):
+#         instance = self.get_object()
+#         instance.answer = request.data.get("answer")
+#         instance.save()
+#         return Response(BiographicalQuestionInstanceSerializer(instance).data)
+
+
+class SubmitQuestionInstanceView(UpdateAPIView):
+    queryset = BiographicalQuestionInstance.objects.all()
+    serializer_class = BiographicalQuestionInstanceSerializer
+    permission_classes = [IsGuidance | IsAdmin]
