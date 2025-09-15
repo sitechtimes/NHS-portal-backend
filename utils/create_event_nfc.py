@@ -7,8 +7,10 @@ load_dotenv()
 
 def create_event_nfc(name, time_start, time_end):
     key = login_nfc()
-    print(f"Login key: {key}")
-    url = f"http://localhost:9000/events/create/"
+    if not key:
+        return {"error": "Failed to authenticate with NFC backend"}
+    url = f"{os.getenv('NFC_BACKEND_URL')}/events/create/"
+    # url = f"http://localhost:9000/events/create/"
     payload = {
         "name": name,
         "timeStart": time_start,
@@ -34,5 +36,7 @@ def login_nfc():
         "password": os.getenv("NFC_BACKEND_PASSWORD"),
     }
     response = requests.post(url, json=payload, timeout=10)
-    print(response.json().get("key"))
-    return response.json().get("key")
+    if response.json().get("key"):
+        return response.json().get("key")
+    else:
+        return None
