@@ -5,8 +5,8 @@ from users.models import CustomUser
 class ServiceEvent(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    timeStart = models.DateTimeField()
-    timeEnd = models.DateTimeField()
+    time_start = models.DateTimeField()
+    time_end = models.DateTimeField()
     creator = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="created_events"
     )

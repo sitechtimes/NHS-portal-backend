@@ -4,6 +4,7 @@ from .models import ServiceEvent
 from profiles.models import EventParticipation, ServiceProfile
 from users.models import CustomUser
 import json
+import os
 from rest_framework.response import Response
 from utils.create_event_nfc import create_event_nfc
 
@@ -14,18 +15,20 @@ class EventSerializer(serializers.ModelSerializer):
         fields = [
             "name",
             "description",
-            "timeStart",
-            "timeEnd",
+            "time_start",
+            "time_end",
             "creator",
         ]
         read_only_fields = ["creator"]
 
     def create(self, validated_data):
+        if validated_data["api_key"] != os.getenv("NFC_BACKEND_API_KEY"):
+            raise serializers.ValidationError("Invalid API key")
         request = self.context.get("request")
         created_event = create_event_nfc(
             name=validated_data["name"],
-            time_start=validated_data["timeStart"].isoformat(),
-            time_end=validated_data["timeEnd"].isoformat(),
+            time_start=validated_data["time_start"].isoformat(),
+            time_end=validated_data["time_end"].isoformat(),
         )
         if "error" in created_event:
             raise serializers.ValidationError(created_event["error"])
@@ -33,10 +36,10 @@ class EventSerializer(serializers.ModelSerializer):
             ServiceEvent.objects.create(
                 name=validated_data["name"],
                 description=validated_data["description"],
-                timeStart=validated_data["timeStart"],
-                timeEnd=validated_data["timeEnd"],
+                time_start=validated_data["time_start"],
+                time_end=validated_data["time_end"],
                 creator=request.user,
-                nfc_id=1,
+                nfc_id=created_event["id"],
             )
         return validated_data
         # return event
