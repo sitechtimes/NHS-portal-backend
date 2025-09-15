@@ -22,8 +22,6 @@ class EventSerializer(serializers.ModelSerializer):
         read_only_fields = ["creator"]
 
     def create(self, validated_data):
-        if validated_data["api_key"] != os.getenv("NFC_BACKEND_API_KEY"):
-            raise serializers.ValidationError("Invalid API key")
         request = self.context.get("request")
         created_event = create_event_nfc(
             name=validated_data["name"],

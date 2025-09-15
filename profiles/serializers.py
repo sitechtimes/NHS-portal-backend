@@ -1,5 +1,5 @@
 import email
-from os import read
+import os
 from rest_framework import permissions, viewsets, serializers
 from profiles.models import (
     ServiceProfile,
@@ -116,6 +116,19 @@ class EventParticipationSerializer(serializers.ModelSerializer):
             "service_event",
             "service_profile",
         ]
+
+        def create(self, validated_data):
+            if validated_data["api_key"] != os.getenv("NFC_BACKEND_API_KEY"):
+                raise serializers.ValidationError("Invalid API key")
+            service_profile = ServiceProfile.objects.get(
+                user__email=validated_data["email"]
+            )
+            service_event = ServiceEvent.objects.get(nfc_id=validated_data["nfc_id"])
+            event_participation = EventParticipation.objects.create(
+                service_event=service_event,
+                service_profile=service_profile,
+            )
+            return event_participation
 
 
 class ExpandedServiceProfileSerializer(serializers.ModelSerializer):

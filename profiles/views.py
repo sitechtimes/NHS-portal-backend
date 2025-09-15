@@ -98,15 +98,3 @@ class CreateGPARecord(CreateAPIView):
 class CreateEventParticipation(GenericAPIView):
     queryset = EventParticipation.objects.all()
     serializer_class = EventParticipationSerializer
-    permission_classes = [IsGuidance | IsAdmin]
-
-    def post(self, request, *args, **kwargs):
-        service_profile = ServiceProfile.objects.get(
-            user__email=request.data.get("email")
-        )
-        service_event = ServiceEvent.objects.get(nfc_id=request.data.get("nfc_id"))
-        participation = EventParticipation.objects.create(
-            service_event=service_event,
-            service_profile=service_profile,
-        )
-        return Response(EventParticipationSerializer(participation).data, status=201)
