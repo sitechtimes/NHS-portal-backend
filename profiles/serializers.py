@@ -118,7 +118,7 @@ class EventParticipationSerializer(serializers.ModelSerializer):
         ]
 
         def create(self, validated_data):
-            if validated_data["api_key"] != os.getenv("NFC_BACKEND_API_KEY"):
+            if validated_data["api_key"] != os.getenv("EVENTS_API_KEY"):
                 raise serializers.ValidationError("Invalid API key")
             service_profile = ServiceProfile.objects.get(
                 user__email=validated_data["email"]
