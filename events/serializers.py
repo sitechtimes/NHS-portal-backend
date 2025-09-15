@@ -22,22 +22,22 @@ class EventSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get("request")
-        # created_event = create_event_nfc(
-        #     name=validated_data["name"],
-        #     time_start=validated_data["timeStart"].isoformat(),
-        #     time_end=validated_data["timeEnd"].isoformat(),
-        # )
-        # if "error" in created_event:
-        #     raise serializers.ValidationError(created_event["error"])
-        # else:
-        ServiceEvent.objects.create(
+        created_event = create_event_nfc(
             name=validated_data["name"],
-            description=validated_data["description"],
-            timeStart=validated_data["timeStart"],
-            timeEnd=validated_data["timeEnd"],
-            creator=request.user,
-            nfc_id=1,
+            time_start=validated_data["timeStart"].isoformat(),
+            time_end=validated_data["timeEnd"].isoformat(),
         )
+        if "error" in created_event:
+            raise serializers.ValidationError(created_event["error"])
+        else:
+            ServiceEvent.objects.create(
+                name=validated_data["name"],
+                description=validated_data["description"],
+                timeStart=validated_data["timeStart"],
+                timeEnd=validated_data["timeEnd"],
+                creator=request.user,
+                nfc_id=1,
+            )
         return validated_data
         # return event
 
