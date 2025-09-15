@@ -9,11 +9,12 @@ from profiles.models import (
     ServiceEvent,
     LeadershipActivity,
     GPARecord,
-    EventParticipation,
+    EventActivity,
 )
 from users.models import CustomUser
 
 
+# Activity/Event Serializers
 class ServiceActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -84,6 +85,34 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
         return instance
 
 
+class EventActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventActivity
+        fields = [
+            "service_event",
+            "service_profile",
+        ]
+
+
+# GPA Serializer
+class GPARecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GPARecord
+        fields = ["id", "gpa", "semester", "year"]
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        personal_profile = PersonalProfile.objects.get(user=user)
+        gpa_record = GPARecord.objects.create(
+            personal_profile=personal_profile,
+            gpa=validated_data["gpa"],
+            year=validated_data["year"],
+            semester=validated_data["semester"],
+        )
+        return gpa_record
+
+
+# Profile Serializers
 class ServiceProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceProfile
@@ -109,31 +138,9 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
         return instance
 
 
-class EventParticipationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EventParticipation
-        fields = [
-            "service_event",
-            "service_profile",
-        ]
-
-        def create(self, validated_data):
-            if validated_data["api_key"] != os.getenv("EVENTS_API_KEY"):
-                raise serializers.ValidationError("Invalid API key")
-            service_profile = ServiceProfile.objects.get(
-                user__email=validated_data["email"]
-            )
-            service_event = ServiceEvent.objects.get(nfc_id=validated_data["nfc_id"])
-            event_participation = EventParticipation.objects.create(
-                service_event=service_event,
-                service_profile=service_profile,
-            )
-            return event_participation
-
-
 class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
     service_activities = ServiceActivitySerializer(many=True)
-    event_participations = EventParticipationSerializer(many=True)
+    event_activities = EventActivitySerializer(many=True)
 
     class Meta:
         model = ServiceProfile
@@ -142,7 +149,7 @@ class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
             "recommendation_teacher",
             "recommendation_given",
             "service_activities",
-            "event_participations",
+            "event_activities",
         ]
         read_only_fields = ["user"]
 
@@ -202,32 +209,16 @@ class ExpandedLeadershipProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ["user"]
 
 
-class GPARecordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GPARecord
-        fields = ["id", "gpa", "semester", "year"]
-
-    def create(self, validated_data):
-        user = self.context["request"].user
-        personal_profile = PersonalProfile.objects.get(user=user)
-        gpa_record = GPARecord.objects.create(
-            personal_profile=personal_profile,
-            gpa=validated_data["gpa"],
-            year=validated_data["year"],
-            semester=validated_data["semester"],
-        )
-        return gpa_record
-
-
 class PersonalProfileSerializer(serializers.ModelSerializer):
     gpa_records = GPARecordSerializer(many=True, read_only=True)
 
     class Meta:
         model = PersonalProfile
-        fields = ["id", "gpa_records", "character_issues"]
+        fields = ["id", "gpa_records", "character_issues", "notes"]
         read_only_fields = ["user"]
 
     def update(self, instance, validated_data):
         instance.character_issues = validated_data.get("character_issues")
+        instance.notes = validated_data.get("notes")
         instance.save()
         return instance

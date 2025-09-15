@@ -34,6 +34,7 @@ class PersonalProfile(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="personal_profile"
     )
     character_issues = models.BooleanField(default=False)
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} - Personal Profile"
@@ -53,12 +54,12 @@ class ServiceActivity(models.Model):
         return self.title
 
 
-class EventParticipation(models.Model):
+class EventActivity(models.Model):
     service_event = models.ForeignKey(
-        ServiceEvent, on_delete=models.CASCADE, related_name="participations"
+        ServiceEvent, on_delete=models.CASCADE, related_name="event_activities"
     )
     service_profile = models.ForeignKey(
-        ServiceProfile, on_delete=models.CASCADE, related_name="event_participations"
+        ServiceProfile, on_delete=models.CASCADE, related_name="event_activities"
     )
 
 

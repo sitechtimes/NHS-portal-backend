@@ -29,10 +29,10 @@ from events.views import *
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("create-event/", CreateEventView.as_view(), name="create-event"),
     path("api/token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("guidance/", include("guidance.urls")),
     path("users/", include("users.urls")),
     path("profiles/", include("profiles.urls")),
+    path("events/", include("events.urls")),
 ]

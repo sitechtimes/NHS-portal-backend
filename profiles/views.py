@@ -1,4 +1,5 @@
 from sched import Event
+import os
 from rest_framework.generics import (
     CreateAPIView,
     DestroyAPIView,
@@ -20,7 +21,7 @@ from profiles.serializers import (
     LeadershipProfileSerializer,
     PersonalProfileSerializer,
     GPARecordSerializer,
-    EventParticipationSerializer,
+    EventActivitySerializer,
 )
 from profiles.models import (
     ServiceActivity,
@@ -29,12 +30,13 @@ from profiles.models import (
     LeadershipProfile,
     PersonalProfile,
     GPARecord,
-    EventParticipation,
+    EventActivity,
     ServiceEvent,
 )
 from rest_framework.response import Response
 
 
+# Service Activity Views
 class CreateServiceActivity(CreateAPIView):
     queryset = ServiceActivity.objects.all()
     serializer_class = ServiceActivitySerializer
@@ -53,6 +55,7 @@ class UpdateServiceActivity(UpdateAPIView):
     permission_classes = [OwnsServiceProfileOfActivity | IsGuidance | IsAdmin]
 
 
+# Leadership Activity Views
 class CreateLeadershipActivity(CreateAPIView):
     queryset = LeadershipActivity.objects.all()
     serializer_class = LeadershipActivitySerializer
@@ -71,6 +74,7 @@ class UpdateLeadershipActivity(UpdateAPIView):
     permission_classes = [OwnsLeadershipProfileOfActivity | IsGuidance | IsAdmin]
 
 
+# Update Profile Views
 class UpdateServiceProfile(UpdateAPIView):
     queryset = ServiceProfile.objects.all()
     serializer_class = ServiceProfileSerializer
@@ -86,15 +90,30 @@ class UpdateLeadershipProfile(UpdateAPIView):
 class UpdatePersonalProfile(UpdateAPIView):
     queryset = PersonalProfile.objects.all()
     serializer_class = PersonalProfileSerializer
-    permission_classes = [IsOwner | IsGuidance | IsAdmin]
+    permission_classes = [IsGuidance | IsAdmin]
 
 
+# GPA Record Views
 class CreateGPARecord(CreateAPIView):
     queryset = GPARecord.objects.all()
     serializer_class = GPARecordSerializer
     permission_classes = [IsOwner | IsGuidance | IsAdmin]
 
 
-class CreateEventParticipation(GenericAPIView):
-    queryset = EventParticipation.objects.all()
-    serializer_class = EventParticipationSerializer
+# Event API endpoints
+class CreateEventActivity(GenericAPIView):
+    queryset = EventActivity.objects.all()
+    serializer_class = EventActivitySerializer
+
+    def post(self, request, *args, **kwargs):
+        if request.data.get("api_key") != os.getenv("EVENTS_API_KEY"):
+            return Response({"error": "Invalid API key"}, status=403)
+        service_profile = ServiceProfile.objects.get(
+            user__email=request.data.get("email")
+        )
+        service_event = ServiceEvent.objects.get(nfc_id=request.data.get("nfc_id"))
+        event_activity = EventActivity.objects.create(
+            service_event=service_event,
+            service_profile=service_profile,
+        )
+        return Response(EventActivitySerializer(event_activity).data)

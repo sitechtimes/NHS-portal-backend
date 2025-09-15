@@ -1,7 +1,7 @@
 from os import read
 from rest_framework import serializers
 from .models import ServiceEvent
-from profiles.models import EventParticipation, ServiceProfile
+from profiles.models import EventActivity, ServiceProfile
 from users.models import CustomUser
 import json
 import os
@@ -37,15 +37,15 @@ class EventSerializer(serializers.ModelSerializer):
                 time_start=validated_data["time_start"],
                 time_end=validated_data["time_end"],
                 creator=request.user,
-                nfc_id=created_event["id"],
+                nfc_id=3,
             )
         return validated_data
         # return event
 
 
-class EventParticipationSerializer(serializers.ModelSerializer):
+class EventActivitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = EventParticipation
+        model = EventActivity
         fields = [
             "event",
             "service_profile",
@@ -54,8 +54,8 @@ class EventParticipationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         service_profile = ServiceProfile.objects.get(user=validated_data["user"])
-        participation = EventParticipation.objects.create(
+        event_activity = EventActivity.objects.create(
             event=validated_data["event"],
             service_profile=service_profile,
         )
-        return participation
+        return event_activity
