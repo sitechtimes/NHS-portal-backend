@@ -7,6 +7,9 @@ from profiles.serializers import (
 )
 from guidance.models import BiographicalQuestionInstance
 from guidance.serializers import BiographicalQuestionInstanceSerializer
+from django.db.models import Sum
+from django.db.models import Sum, F, ExpressionWrapper, DurationField
+from django.db.models.functions import Coalesce
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -75,17 +78,14 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
 
     def get_total_hours(self, obj):
         service_profile = obj.service_profile
-
-        total_hours = 0
-        for activity in service_profile.service_activities.all():
-            print(activity)
-            total_hours += activity.hours
-        for event_activity in service_profile.event_activities.all():
-            print(event_activity)
-            event = event_activity.event
-            try:
-                delta = event.time_end - event.time_start
-                total += delta.total_seconds() / 3600.0
-            except Exception:
-                continue
-        return total_hours
+        service_activity_hours = service_profile.service_activities.aggregate(
+            total_hours=Sum("hours")
+        ).get("total_hours", 0)
+        event_activity_hours = 0
+        for activity in service_profile.event_activities.all():
+            event_activity_seconds += (
+                activity.event.time_end - activity.event.time_start
+            )
+            print(event_activity_seconds)
+            event_activity_hours = event_activity_hours.total_seconds() / 3600
+        return event_activity_hours
