@@ -37,7 +37,7 @@ class EventSerializer(serializers.ModelSerializer):
                 time_start=validated_data["time_start"],
                 time_end=validated_data["time_end"],
                 creator=request.user,
-                nfc_id=3,
+                nfc_id=created_event["id"],
             )
         return validated_data
         # return event

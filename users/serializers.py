@@ -54,6 +54,7 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
     leadership_profile = ExpandedLeadershipProfileSerializer()
     personal_profile = PersonalProfileSerializer()
     biographical_question_instances = BiographicalQuestionInstanceSerializer(many=True)
+    total_hours = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -69,4 +70,22 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
             "leadership_profile",
             "personal_profile",
             "biographical_question_instances",
+            "total_hours",
         ]
+
+    def get_total_hours(self, obj):
+        service_profile = obj.service_profile
+
+        total_hours = 0
+        for activity in service_profile.service_activities.all():
+            print(activity)
+            total_hours += activity.hours
+        for event_activity in service_profile.event_activities.all():
+            print(event_activity)
+            event = event_activity.event
+            try:
+                delta = event.time_end - event.time_start
+                total += delta.total_seconds() / 3600.0
+            except Exception:
+                continue
+        return total_hours
