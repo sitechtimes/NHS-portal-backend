@@ -11,8 +11,9 @@ from backend.permissions import (
     IsOwner,
     IsGuidance,
     IsAdmin,
-    OwnsServiceProfileOfActivity,
-    OwnsLeadershipProfileOfActivity,
+    OwnsServiceProfileOfObject,
+    OwnsLeadershipProfileOfObject,
+    OwnsPersonalProfileOfObject,
 )
 from profiles.serializers import (
     ServiceActivitySerializer,
@@ -46,13 +47,13 @@ class CreateServiceActivity(CreateAPIView):
 class DeleteServiceActivity(DestroyAPIView):
     queryset = ServiceActivity.objects.all()
     serializer_class = ServiceActivitySerializer
-    permission_classes = [OwnsServiceProfileOfActivity | IsGuidance | IsAdmin]
+    permission_classes = [OwnsServiceProfileOfObject | IsGuidance | IsAdmin]
 
 
 class UpdateServiceActivity(UpdateAPIView):
     queryset = ServiceActivity.objects.all()
     serializer_class = ServiceActivitySerializer
-    permission_classes = [OwnsServiceProfileOfActivity | IsGuidance | IsAdmin]
+    permission_classes = [OwnsServiceProfileOfObject | IsGuidance | IsAdmin]
 
 
 # Leadership Activity Views
@@ -65,13 +66,13 @@ class CreateLeadershipActivity(CreateAPIView):
 class DeleteLeadershipActivity(DestroyAPIView):
     queryset = LeadershipActivity.objects.all()
     serializer_class = LeadershipActivitySerializer
-    permission_classes = [OwnsLeadershipProfileOfActivity | IsGuidance | IsAdmin]
+    permission_classes = [OwnsLeadershipProfileOfObject | IsGuidance | IsAdmin]
 
 
 class UpdateLeadershipActivity(UpdateAPIView):
     queryset = LeadershipActivity.objects.all()
     serializer_class = LeadershipActivitySerializer
-    permission_classes = [OwnsLeadershipProfileOfActivity | IsGuidance | IsAdmin]
+    permission_classes = [OwnsLeadershipProfileOfObject | IsGuidance | IsAdmin]
 
 
 # Update Profile Views
@@ -94,10 +95,10 @@ class UpdatePersonalProfile(UpdateAPIView):
 
 
 # GPA Record Views
-class CreateGPARecord(CreateAPIView):
+class UpdateGPARecord(UpdateAPIView):
     queryset = GPARecord.objects.all()
     serializer_class = GPARecordSerializer
-    permission_classes = [IsOwner | IsGuidance | IsAdmin]
+    permission_classes = [OwnsPersonalProfileOfObject | IsGuidance | IsAdmin]
 
 
 # Event API endpoints

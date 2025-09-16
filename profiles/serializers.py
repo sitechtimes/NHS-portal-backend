@@ -20,7 +20,7 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ServiceActivity
-        fields = ["title", "supervisor", "grades", "hours", "image"]
+        fields = ["id", "title", "supervisor", "grades", "hours", "image"]
         read_only_fields = ["service_profile"]
 
     def create(self, validated_data):
@@ -56,7 +56,7 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
 class LeadershipActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = LeadershipActivity
-        fields = ["title", "supervisor", "description", "image"]
+        fields = ["id", "title", "supervisor", "description", "image"]
         read_only_fields = ["leadership_profile"]
 
     def create(self, validated_data):
@@ -92,6 +92,7 @@ class EventActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = EventActivity
         fields = [
+            "id",
             "service_event",
         ]
 
@@ -112,6 +113,13 @@ class GPARecordSerializer(serializers.ModelSerializer):
             semester=validated_data["semester"],
         )
         return gpa_record
+
+    def update(self, instance, validated_data):
+        instance.gpa = validated_data.get("gpa")
+        instance.semester = validated_data.get("semester")
+        instance.year = validated_data.get("year")
+        instance.save()
+        return instance
 
 
 # Profile Serializers

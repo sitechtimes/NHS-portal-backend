@@ -113,6 +113,12 @@ class CreateAnnouncement(CreateAPIView):
     permission_classes = [IsGuidance | IsAdmin]
 
 
+class DeleteAnnouncement(DestroyAPIView):
+    queryset = Announcement.objects.all()
+    serializer_class = AnnouncementSerializer
+    permission_classes = [IsGuidance | IsAdmin]
+
+
 class AnnouncementView(ListAPIView):
     queryset = Announcement.objects.all().order_by("-created_at")
     serializer_class = AnnouncementSerializer
@@ -129,6 +135,12 @@ class CreateBiographicalQuestion(CreateAPIView):
 
 
 class BiographicalQuestionsView(ListAPIView):
+    queryset = BiographicalQuestion.objects.all()
+    serializer_class = BiographicalQuestionSerializer
+    permission_classes = [IsGuidance | IsAdmin]
+
+
+class DeleteBiographicalQuestion(DestroyAPIView):
     queryset = BiographicalQuestion.objects.all()
     serializer_class = BiographicalQuestionSerializer
     permission_classes = [IsGuidance | IsAdmin]

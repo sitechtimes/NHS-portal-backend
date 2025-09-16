@@ -13,6 +13,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceEvent
         fields = [
+            "id",
             "name",
             "description",
             "time_start",
@@ -46,6 +47,7 @@ class EventActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = EventActivity
         fields = [
+            "id",
             "event",
             "service_profile",
         ]

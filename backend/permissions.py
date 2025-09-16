@@ -36,14 +36,19 @@ class IsOwner(BasePermission):
         return obj.user == request.user
 
 
-class OwnsServiceProfileOfActivity(BasePermission):
+class OwnsServiceProfileOfObject(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.service_profile.user == request.user
 
 
-class OwnsLeadershipProfileOfActivity(BasePermission):
+class OwnsLeadershipProfileOfObject(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.leadership_profile.user == request.user
+
+
+class OwnsPersonalProfileOfObject(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.personal_profile.user == request.user
 
 
 class OwnsQuestionInstance(BasePermission):

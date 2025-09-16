@@ -11,6 +11,7 @@ class AnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
         fields = [
+            "id",
             "recipient_emails",
             "title",
             "message",
@@ -56,11 +57,17 @@ class AnnouncementSerializer(serializers.ModelSerializer):
                 )
         return announcement
 
+    def delete(self, validated_data):
+        announcement = Announcement.objects.get(id=validated_data.get("pk"))
+        if announcement.exists():
+            announcement.delete()
+        return validated_data
+
 
 class BiographicalQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = BiographicalQuestion
-        fields = ["question_text", "answer_type", "options"]
+        fields = ["id", "question_text", "answer_type", "options"]
 
     def create(self, validated_data):
         if validated_data.get("answer_type") in ["dropdown", "checkbox"]:
@@ -76,13 +83,26 @@ class BiographicalQuestionSerializer(serializers.ModelSerializer):
             )
         return question
 
+    def update(self, instance, validated_data):
+        instance.question_text = validated_data.get("question_text")
+        instance.answer_type = validated_data.get("answer_type")
+        instance.options = validated_data.get("options")
+        instance.save()
+        return instance
+
+    def delete(self, validated_data):
+        question = BiographicalQuestion.objects.get(id=validated_data.get("pk"))
+        if question.exists():
+            question.delete()
+        return validated_data
+
 
 class BiographicalQuestionInstanceSerializer(serializers.ModelSerializer):
     question_text = serializers.SerializerMethodField()
 
     class Meta:
         model = BiographicalQuestionInstance
-        fields = ["user", "question_text", "answer"]
+        fields = ["id", "user", "question_text", "answer"]
 
     def get_question_text(self, obj):
         return obj.question.question_text

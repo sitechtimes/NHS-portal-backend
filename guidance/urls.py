@@ -31,11 +31,21 @@ urlpatterns = [
         CreateAnnouncement.as_view(),
         name="create-announcement",
     ),
+    path(
+        "delete-announcement/<int:pk>/",
+        DeleteAnnouncement.as_view(),
+        name="delete-announcement",
+    ),
     path("announcements/", AnnouncementView.as_view(), name="announcements"),
     path(
         "create-biographical-question/",
         CreateBiographicalQuestion.as_view(),
         name="create-biographical-question",
+    ),
+    path(
+        "delete-biographical-question/<int:pk>/",
+        DeleteBiographicalQuestion.as_view(),
+        name="delete-biographical-question",
     ),
     path(
         "biographical-questions/",

@@ -48,9 +48,9 @@ urlpatterns = [
         name="update-personal-profile",
     ),
     path(
-        "create-gpa-record/",
-        CreateGPARecord.as_view(),
-        name="create-gpa-record",
+        "update-gpa-record/<int:pk>/",
+        UpdateGPARecord.as_view(),
+        name="update-gpa-record",
     ),
     path(
         "create-event-activity/",
