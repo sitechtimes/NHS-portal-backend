@@ -44,3 +44,8 @@ class OwnsServiceProfileOfActivity(BasePermission):
 class OwnsLeadershipProfileOfActivity(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.leadership_profile.user == request.user
+
+
+class OwnsQuestionInstance(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user

@@ -31,7 +31,7 @@ class EventSerializer(serializers.ModelSerializer):
         if "error" in created_event:
             raise serializers.ValidationError(created_event["error"])
         else:
-            ServiceEvent.objects.create(
+            service_event = ServiceEvent.objects.create(
                 name=validated_data["name"],
                 description=validated_data["description"],
                 time_start=validated_data["time_start"],
@@ -39,8 +39,7 @@ class EventSerializer(serializers.ModelSerializer):
                 creator=request.user,
                 nfc_id=created_event["id"],
             )
-        return validated_data
-        # return event
+        return service_event
 
 
 class EventActivitySerializer(serializers.ModelSerializer):

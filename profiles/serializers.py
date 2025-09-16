@@ -1,6 +1,7 @@
 import email
 import os
 from rest_framework import permissions, viewsets, serializers
+from events.serializers import EventSerializer
 from profiles.models import (
     ServiceProfile,
     LeadershipProfile,
@@ -86,11 +87,12 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
 
 
 class EventActivitySerializer(serializers.ModelSerializer):
+    service_event = EventSerializer()
+
     class Meta:
         model = EventActivity
         fields = [
             "service_event",
-            "service_profile",
         ]
 
 

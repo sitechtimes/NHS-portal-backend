@@ -20,6 +20,7 @@ from backend.permissions import (
     IsGuidance,
     IsAdmin,
     IsSelf,
+    OwnsQuestionInstance,
 )
 from users.models import CustomUser
 from users.serializers import UserSerializer, ExpandedUserSerializer
@@ -133,19 +134,7 @@ class BiographicalQuestionsView(ListAPIView):
     permission_classes = [IsGuidance | IsAdmin]
 
 
-# class SubmitQuestionView(UpdateAPIView):
-#     queryset = BiographicalQuestionInstance.objects.all()
-#     serializer_class = BiographicalQuestionInstanceSerializer
-#     permission_classes = [IsGuidance | IsAdmin]
-
-#     def update(self, request, *args, **kwargs):
-#         instance = self.get_object()
-#         instance.answer = request.data.get("answer")
-#         instance.save()
-#         return Response(BiographicalQuestionInstanceSerializer(instance).data)
-
-
 class SubmitQuestionInstanceView(UpdateAPIView):
     queryset = BiographicalQuestionInstance.objects.all()
     serializer_class = BiographicalQuestionInstanceSerializer
-    permission_classes = [IsGuidance | IsAdmin]
+    permission_classes = [OwnsQuestionInstance | IsGuidance | IsAdmin]

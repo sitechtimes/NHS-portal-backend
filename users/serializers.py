@@ -79,13 +79,22 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
     def get_total_hours(self, obj):
         service_profile = obj.service_profile
         service_activity_hours = service_profile.service_activities.aggregate(
-            total_hours=Sum("hours")
+            total_hours=Coalesce(Sum("hours"), 0)
         ).get("total_hours", 0)
-        event_activity_hours = 0
-        for activity in service_profile.event_activities.all():
-            event_activity_seconds += (
-                activity.event.time_end - activity.event.time_start
+
+        event_activity_durations = (
+            service_profile.event_activities.annotate(
+                duration=ExpressionWrapper(
+                    F("service_event__time_end") - F("service_event__time_start"),
+                    output_field=DurationField(),
+                )
             )
-            print(event_activity_seconds)
-            event_activity_hours = event_activity_hours.total_seconds() / 3600
-        return event_activity_hours
+            .aggregate(total_duration=Coalesce(Sum("duration"), None))
+            .get("total_duration")
+        )
+
+        event_activity_hours = 0
+        if event_activity_durations:
+            event_activity_hours = event_activity_durations.total_seconds() / 3600
+
+        return service_activity_hours + event_activity_hours
