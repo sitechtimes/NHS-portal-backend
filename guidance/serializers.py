@@ -98,14 +98,11 @@ class BiographicalQuestionSerializer(serializers.ModelSerializer):
 
 
 class BiographicalQuestionInstanceSerializer(serializers.ModelSerializer):
-    question_text = serializers.SerializerMethodField()
+    question = BiographicalQuestionSerializer()
 
     class Meta:
         model = BiographicalQuestionInstance
-        fields = ["id", "user", "question_text", "answer"]
-
-    def get_question_text(self, obj):
-        return obj.question.question_text
+        fields = ["id", "user", "question", "answer"]
 
     def update(self, instance, validated_data):
         instance.answer = validated_data.get("answer")
