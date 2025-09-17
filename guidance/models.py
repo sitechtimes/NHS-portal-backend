@@ -19,7 +19,6 @@ class BiographicalQuestion(models.Model):
     ANSWER_TYPE_CHOICES = [
         ("text", "text"),
         ("dropdown", "dropdown"),
-        ("checkbox", "checkbox"),
         ("number", "number"),
     ]
     question_text = models.TextField()
