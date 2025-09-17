@@ -43,7 +43,6 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
         return validated_data
 
     def update(self, instance, validated_data):
-        # service_profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
         instance.title = validated_data.get("title")
         instance.supervisor = validated_data.get("supervisor")
         instance.grades = validated_data.get("grades")

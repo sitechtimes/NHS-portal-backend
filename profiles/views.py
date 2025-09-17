@@ -1,3 +1,4 @@
+from calendar import c
 from sched import Event
 import os
 from rest_framework.generics import (
@@ -5,6 +6,7 @@ from rest_framework.generics import (
     DestroyAPIView,
     UpdateAPIView,
     GenericAPIView,
+    RetrieveAPIView,
 )
 from backend.permissions import (
     IsStudent,
@@ -23,6 +25,8 @@ from profiles.serializers import (
     PersonalProfileSerializer,
     GPARecordSerializer,
     EventActivitySerializer,
+    ExpandedServiceProfileSerializer,
+    ExpandedLeadershipProfileSerializer,
 )
 from profiles.models import (
     ServiceActivity,
@@ -75,10 +79,16 @@ class UpdateLeadershipActivity(UpdateAPIView):
     permission_classes = [OwnsLeadershipProfileOfObject | IsGuidance | IsAdmin]
 
 
-# Update Profile Views
+# Profile Views
 class UpdateServiceProfile(UpdateAPIView):
     queryset = ServiceProfile.objects.all()
     serializer_class = ServiceProfileSerializer
+    permission_classes = [IsOwner | IsGuidance | IsAdmin]
+
+
+class RetrieveServiceProfile(RetrieveAPIView):
+    queryset = ServiceProfile.objects.all()
+    serializer_class = ExpandedServiceProfileSerializer
     permission_classes = [IsOwner | IsGuidance | IsAdmin]
 
 
@@ -88,10 +98,22 @@ class UpdateLeadershipProfile(UpdateAPIView):
     permission_classes = [IsOwner | IsGuidance | IsAdmin]
 
 
+class RetrieveLeadershipProfile(RetrieveAPIView):
+    queryset = LeadershipProfile.objects.all()
+    serializer_class = ExpandedLeadershipProfileSerializer
+    permission_classes = [IsOwner | IsGuidance | IsAdmin]
+
+
 class UpdatePersonalProfile(UpdateAPIView):
     queryset = PersonalProfile.objects.all()
     serializer_class = PersonalProfileSerializer
     permission_classes = [IsGuidance | IsAdmin]
+
+
+class RetrievePersonalProfile(RetrieveAPIView):
+    queryset = PersonalProfile.objects.all()
+    serializer_class = PersonalProfileSerializer
+    permission_classes = [IsOwner | IsGuidance | IsAdmin]
 
 
 # GPA Record Views

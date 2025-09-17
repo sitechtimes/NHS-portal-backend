@@ -33,7 +33,6 @@ class AnnouncementSerializer(serializers.ModelSerializer):
             )
         else:
             recipient_emails = validated_data.get("recipient_emails")
-        print(recipient_emails)
         announcement = Announcement.objects.create(
             title=validated_data["title"],
             message=validated_data["message"],
@@ -70,7 +69,9 @@ class BiographicalQuestionSerializer(serializers.ModelSerializer):
         fields = ["id", "question_text", "answer_type", "options"]
 
     def create(self, validated_data):
-        if validated_data.get("answer_type") in ["dropdown", "checkbox"]:
+        if validated_data.get("answer_type") not in ["dropdown", "text", "number"]:
+            raise serializers.ValidationError("Invalid answer type.")
+        if validated_data.get("answer_type") == "dropdown":
             question = BiographicalQuestion.objects.create(
                 question_text=validated_data["question_text"],
                 answer_type=validated_data["answer_type"],
@@ -86,7 +87,8 @@ class BiographicalQuestionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.question_text = validated_data.get("question_text")
         instance.answer_type = validated_data.get("answer_type")
-        instance.options = validated_data.get("options")
+        if validated_data.get("answer_type") == "dropdown":
+            instance.options = validated_data.get("options")
         instance.save()
         return instance
 
@@ -105,6 +107,20 @@ class BiographicalQuestionInstanceSerializer(serializers.ModelSerializer):
         fields = ["id", "user", "question", "answer"]
 
     def update(self, instance, validated_data):
+        if instance.question.answer_type == "dropdown":
+            if validated_data.get("answer") not in json.loads(
+                instance.question.options
+            ):
+                raise serializers.ValidationError("Answer not in options.")
+        elif instance.question.answer_type == "number":
+            try:
+                float(validated_data.get("answer"))
+            except ValueError:
+                raise serializers.ValidationError("Answer must be a number.")
+        elif instance.question.answer_type == "text":
+            if not isinstance(validated_data.get("answer"), str):
+                raise serializers.ValidationError("Answer must be text.")
+
         instance.answer = validated_data.get("answer")
         instance.save()
         return instance

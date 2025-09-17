@@ -24,6 +24,10 @@ class EventSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get("request")
+        if validated_data["time_start"] >= validated_data["time_end"]:
+            raise serializers.ValidationError(
+                "Event end time must be after event start time."
+            )
         created_event = create_event_nfc(
             name=validated_data["name"],
             time_start=validated_data["time_start"].isoformat(),
@@ -52,11 +56,3 @@ class EventActivitySerializer(serializers.ModelSerializer):
             "service_profile",
         ]
         read_only_fields = ["user"]
-
-    def create(self, validated_data):
-        service_profile = ServiceProfile.objects.get(user=validated_data["user"])
-        event_activity = EventActivity.objects.create(
-            event=validated_data["event"],
-            service_profile=service_profile,
-        )
-        return event_activity

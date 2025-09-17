@@ -87,13 +87,23 @@ class GiveRecommendation(GenericAPIView):
     def post(self, request):
         student_id = request.data.get("student_id")
         recommendation_type = request.data.get("recommendation_type")
+        if recommendation_type not in [
+            "service",
+            "leadership",
+            "character",
+            "scholarship",
+        ]:
+            return Response(
+                {"error": "Invalid recommendation type."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         student = CustomUser.objects.get(id=student_id, user_type="0")
 
         if recommendation_type == "service":
             profile = student.service_profile
             profile.recommendation_given = True
-        elif recommendation_type in ["leadership", "character", "scholarship"]:
+        else:
             profile = student.leadership_profile
             if recommendation_type == "leadership":
                 profile.leadership_recommendation_given = True
