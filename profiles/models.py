@@ -8,8 +8,6 @@ class ServiceProfile(models.Model):
     user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="service_profile"
     )
-    recommendation_teacher = models.CharField(null=True, blank=True)
-    recommendation_given = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -19,12 +17,6 @@ class LeadershipProfile(models.Model):
     user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="leadership_profile"
     )
-    teacher_leadership = models.CharField(null=True, blank=True)
-    leadership_recommendation_given = models.BooleanField(default=False)
-    teacher_character = models.CharField(null=True, blank=True)
-    character_recommendation_given = models.BooleanField(default=False)
-    teacher_scholarship = models.CharField(null=True, blank=True)
-    scholarship_recommendation_given = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

@@ -43,3 +43,19 @@ class BiographicalQuestionInstance(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.question.question_text}"
+
+
+class RecommendationRequest(models.Model):
+    REQUEST_TYPE_CHOICES = [
+        ("service", "service"),
+        ("leadership", "leadership"),
+        ("character", "character"),
+        ("scholarship", "scholarship"),
+    ]
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="recommendation_requests"
+    )
+    request_type = models.CharField(max_length=20, choices=REQUEST_TYPE_CHOICES)
+    teacher_email = models.EmailField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    accepted = models.BooleanField(default=False)

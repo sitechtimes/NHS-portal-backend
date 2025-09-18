@@ -71,6 +71,7 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
             "personal_profile",
             "biographical_question_instances",
             "total_hours",
+            "recommendation_requests",
         ]
 
     def get_total_hours(self, obj):
