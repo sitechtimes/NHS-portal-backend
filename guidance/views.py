@@ -67,7 +67,6 @@ class FilterStudentsView(ListAPIView):
                 "last_name",
                 "official_class",
                 "email",
-                "graduation_year",
             ]:
                 queryset = queryset.filter(**{f"{param}__icontains": params.get(param)})
 

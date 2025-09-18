@@ -7,9 +7,6 @@ class ServiceEvent(models.Model):
     description = models.TextField()
     time_start = models.DateTimeField()
     time_end = models.DateTimeField()
-    creator = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="created_events"
-    )
     nfc_id = models.UUIDField(unique=True)
 
     def __str__(self):

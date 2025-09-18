@@ -18,9 +18,7 @@ class EventSerializer(serializers.ModelSerializer):
             "description",
             "time_start",
             "time_end",
-            "creator",
         ]
-        read_only_fields = ["creator"]
 
     def create(self, validated_data):
         request = self.context.get("request")
@@ -41,7 +39,6 @@ class EventSerializer(serializers.ModelSerializer):
                 description=validated_data["description"],
                 time_start=validated_data["time_start"],
                 time_end=validated_data["time_end"],
-                creator=request.user,
                 nfc_id=created_event["id"],
             )
         return service_event
