@@ -1,5 +1,3 @@
-from urllib import request
-from requests import delete
 from rest_framework import serializers
 from .models import (
     Announcement,

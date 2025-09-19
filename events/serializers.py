@@ -1,11 +1,6 @@
-from os import read
 from rest_framework import serializers
 from .models import ServiceEvent
-from profiles.models import EventActivity, ServiceProfile
-from users.models import CustomUser
-import json
-import os
-from rest_framework.response import Response
+from profiles.models import EventActivity
 from utils.create_event_nfc import create_event_nfc
 
 

@@ -1,6 +1,5 @@
 from rest_framework.generics import (
     CreateAPIView,
-    GenericAPIView,
 )
 from backend.permissions import (
     IsTeacher,
