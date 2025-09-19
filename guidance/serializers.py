@@ -10,6 +10,7 @@ from .models import (
 from users.models import CustomUser
 import json
 from rest_framework.response import Response
+from django.db.models import Q
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
@@ -147,11 +148,12 @@ class RecommendationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context.get("request")
         if Recommendation.objects.filter(
-            user=request.user,
-            recommendation_type=validated_data["recommendation_type"],
+            Q(user=request.user)
+            & Q(recommendation_type=validated_data["recommendation_type"])
+            & (Q(approved=False) | Q(approved__isnull=True))
         ).exists():
             raise serializers.ValidationError(
-                "You have already requested this type of recommendation."
+                "You have an active recommendation request for this type."
             )
         recommendation = Recommendation.objects.create(
             user=request.user,
