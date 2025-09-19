@@ -9,9 +9,6 @@ from guidance.serializers import (
     BiographicalQuestionInstanceSerializer,
     RecommendationSerializer,
 )
-from django.db.models import Sum
-from django.db.models import Sum, F, ExpressionWrapper, DurationField
-from django.db.models.functions import Coalesce
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -57,7 +54,6 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
     leadership_profile = ExpandedLeadershipProfileSerializer()
     personal_profile = PersonalProfileSerializer()
     biographical_question_instances = BiographicalQuestionInstanceSerializer(many=True)
-    total_hours = serializers.SerializerMethodField()
     recommendations = RecommendationSerializer(many=True)
 
     class Meta:
@@ -73,29 +69,5 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
             "leadership_profile",
             "personal_profile",
             "biographical_question_instances",
-            "total_hours",
             "recommendations",
         ]
-
-    def get_total_hours(self, obj):
-        service_profile = obj.service_profile
-        service_activity_hours = service_profile.service_activities.aggregate(
-            total_hours=Coalesce(Sum("hours"), 0)
-        ).get("total_hours", 0)
-
-        event_activity_durations = (
-            service_profile.event_activities.annotate(
-                duration=ExpressionWrapper(
-                    F("service_event__time_end") - F("service_event__time_start"),
-                    output_field=DurationField(),
-                )
-            )
-            .aggregate(total_duration=Coalesce(Sum("duration"), None))
-            .get("total_duration")
-        )
-
-        event_activity_hours = 0
-        if event_activity_durations:
-            event_activity_hours = event_activity_durations.total_seconds() / 3600
-
-        return service_activity_hours + event_activity_hours

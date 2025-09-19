@@ -13,6 +13,8 @@ from profiles.models import (
     EventActivity,
 )
 from users.models import CustomUser
+from django.db.models import Sum, F, ExpressionWrapper, DurationField
+from django.db.models.functions import Coalesce
 
 
 # Activity/Event Serializers
@@ -150,6 +152,7 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
 class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
     service_activities = ServiceActivitySerializer(many=True)
     event_activities = EventActivitySerializer(many=True)
+    total_hours = serializers.SerializerMethodField()
 
     class Meta:
         model = ServiceProfile
@@ -157,8 +160,31 @@ class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
             "id",
             "service_activities",
             "event_activities",
+            "total_hours",
         ]
         read_only_fields = ["user"]
+
+    def get_total_hours(self, obj):
+        service_activity_hours = obj.service_activities.aggregate(
+            total_hours=Coalesce(Sum("hours"), 0)
+        ).get("total_hours", 0)
+
+        event_activity_durations = (
+            obj.event_activities.annotate(
+                duration=ExpressionWrapper(
+                    F("service_event__time_end") - F("service_event__time_start"),
+                    output_field=DurationField(),
+                )
+            )
+            .aggregate(total_duration=Coalesce(Sum("duration"), None))
+            .get("total_duration")
+        )
+
+        event_activity_hours = 0
+        if event_activity_durations:
+            event_activity_hours = event_activity_durations.total_seconds() / 3600
+
+        return service_activity_hours + event_activity_hours
 
 
 class LeadershipProfileSerializer(serializers.ModelSerializer):
