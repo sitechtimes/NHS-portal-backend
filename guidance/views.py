@@ -9,7 +9,7 @@ from rest_framework.generics import (
     GenericAPIView,
     UpdateAPIView,
 )
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from backend.permissions import (
     IsStudent,
     IsTeacher,
@@ -37,13 +37,13 @@ from .serializers import (
 class StudentView(RetrieveAPIView):
     queryset = CustomUser.objects.filter(user_type="0")
     serializer_class = UserSerializer
-    permission_classes = [IsSelf | IsTeacher | IsGuidance | IsAdmin]
+    permission_classes = [IsSelf | IsGuidance | IsAdmin]
 
 
 class ExpandedStudentView(RetrieveAPIView):
     queryset = CustomUser.objects.filter(user_type="0")
     serializer_class = ExpandedUserSerializer
-    permission_classes = [IsSelf | IsTeacher | IsGuidance | IsAdmin]
+    permission_classes = [IsSelf | IsGuidance | IsAdmin]
 
 
 class MultipleStudentsView(ListAPIView):
@@ -82,7 +82,7 @@ class AllStudentsView(ListAPIView):
 
 
 class GiveRecommendation(GenericAPIView):
-    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
+    permission_classes = [IsTeacher | IsAdmin]
     serializer_class = ExpandedUserSerializer
 
     def post(self, request):
@@ -121,19 +121,19 @@ class GiveRecommendation(GenericAPIView):
 class CreateAnnouncement(CreateAPIView):
     queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
-    permission_classes = [IsGuidance | IsAdmin]
+    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
 
 
 class DeleteAnnouncement(DestroyAPIView):
     queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
-    permission_classes = [IsGuidance | IsAdmin]
+    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
 
 
 class AnnouncementView(ListAPIView):
     queryset = Announcement.objects.all().order_by("-created_at")
     serializer_class = AnnouncementSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 
 class CreateBiographicalQuestion(CreateAPIView):
@@ -160,19 +160,19 @@ class DeleteBiographicalQuestion(DestroyAPIView):
 class SubmitQuestionInstanceView(UpdateAPIView):
     queryset = BiographicalQuestionInstance.objects.all()
     serializer_class = BiographicalQuestionInstanceSerializer
-    permission_classes = [OwnsQuestionInstance | IsGuidance | IsAdmin]
+    permission_classes = [OwnsQuestionInstance | IsAdmin]
 
 
 class RequestRecommendation(CreateAPIView):
     queryset = Recommendation.objects.all()
     serializer_class = RecommendationSerializer
-    permission_classes = [IsSelf | IsGuidance | IsAdmin]
+    permission_classes = [IsSelf | IsAdmin]
 
 
 class ApproveRecommendation(GenericAPIView):
     queryset = Recommendation.objects.all()
     serializer_class = RecommendationSerializer
-    permission_classes = [IsGuidance | IsAdmin]
+    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
 
     def post(self, request, pk):
         recommendation = self.get_object()
@@ -185,7 +185,7 @@ class ApproveRecommendation(GenericAPIView):
 class DenyRecommendation(GenericAPIView):
     queryset = Recommendation.objects.all()
     serializer_class = RecommendationSerializer
-    permission_classes = [IsGuidance | IsAdmin]
+    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
 
     def post(self, request, pk):
         recommendation = self.get_object()

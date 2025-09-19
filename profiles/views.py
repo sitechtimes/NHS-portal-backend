@@ -1,5 +1,3 @@
-from calendar import c
-from sched import Event
 import os
 from rest_framework.generics import (
     CreateAPIView,
@@ -20,8 +18,6 @@ from backend.permissions import (
 from profiles.serializers import (
     ServiceActivitySerializer,
     LeadershipActivitySerializer,
-    ServiceProfileSerializer,
-    LeadershipProfileSerializer,
     PersonalProfileSerializer,
     GPARecordSerializer,
     EventActivitySerializer,
@@ -39,6 +35,7 @@ from profiles.models import (
     ServiceEvent,
 )
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 
 # Service Activity Views
@@ -80,8 +77,6 @@ class UpdateLeadershipActivity(UpdateAPIView):
 
 
 # Profile Views
-
-
 class RetrieveServiceProfile(RetrieveAPIView):
     queryset = ServiceProfile.objects.all()
     serializer_class = ExpandedServiceProfileSerializer
@@ -117,6 +112,7 @@ class UpdateGPARecord(UpdateAPIView):
 class CreateEventActivity(GenericAPIView):
     queryset = EventActivity.objects.all()
     serializer_class = EventActivitySerializer
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         if request.data.get("api_key") != os.getenv("EVENTS_API_KEY"):
