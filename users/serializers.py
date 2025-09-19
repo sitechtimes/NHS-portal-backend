@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from users.models import CustomUser
+from guidance.models import Recommendation
 from profiles.serializers import (
     ExpandedServiceProfileSerializer,
     ExpandedLeadershipProfileSerializer,
@@ -9,6 +10,7 @@ from guidance.serializers import (
     BiographicalQuestionInstanceSerializer,
     RecommendationSerializer,
 )
+from django.db.models import Q
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -55,6 +57,7 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
     personal_profile = PersonalProfileSerializer()
     biographical_question_instances = BiographicalQuestionInstanceSerializer(many=True)
     recommendations = RecommendationSerializer(many=True)
+    recommendation_requests = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -70,4 +73,11 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
             "personal_profile",
             "biographical_question_instances",
             "recommendations",
+            "recommendation_requests",
         ]
+
+    def get_recommendation_requests(self, obj):
+        requests = Recommendation.objects.filter(
+            Q(teacher_email=obj.email) & (Q(approved=True) | Q(approved__isnull=True))
+        )
+        return RecommendationSerializer(requests, many=True).data

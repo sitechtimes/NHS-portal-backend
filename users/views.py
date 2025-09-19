@@ -25,12 +25,3 @@ class DeleteUser(DestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsGuidance | IsAdmin]
-
-
-class RetrieveUser(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
