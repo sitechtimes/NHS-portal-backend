@@ -19,20 +19,19 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-
 from django.contrib import admin
 from django.urls import path, include
-from users.views import *
-from profiles.views import *
-from events.views import *
+from events.views import EventViewSet
+from rest_framework.routers import DefaultRouter
 
+router = DefaultRouter()
+router.register(r"events", EventViewSet, basename="event")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("guidance/", include("guidance.urls")),
-    path("users/", include("users.urls")),
     path("profiles/", include("profiles.urls")),
-    path("events/", include("events.urls")),
+    path("", include("events.urls")),
 ]

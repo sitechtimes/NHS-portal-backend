@@ -2,8 +2,8 @@ from rest_framework import serializers
 from users.models import CustomUser
 from guidance.models import Recommendation
 from profiles.serializers import (
-    ExpandedServiceProfileSerializer,
-    ExpandedLeadershipProfileSerializer,
+    ServiceProfileSerializer,
+    LeadershipProfileSerializer,
     PersonalProfileSerializer,
 )
 from guidance.serializers import (
@@ -52,8 +52,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ExpandedUserSerializer(serializers.ModelSerializer):
-    service_profile = ExpandedServiceProfileSerializer()
-    leadership_profile = ExpandedLeadershipProfileSerializer()
+    service_profile = ServiceProfileSerializer()
+    leadership_profile = LeadershipProfileSerializer()
     personal_profile = PersonalProfileSerializer()
     biographical_question_instances = BiographicalQuestionInstanceSerializer(many=True)
     recommendations = RecommendationSerializer(many=True)

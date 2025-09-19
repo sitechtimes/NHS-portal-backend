@@ -1,65 +1,32 @@
-from django.urls import path
-from .views import *
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+from .views import (
+    ServiceActivityViewSet,
+    LeadershipActivityViewSet,
+    ServiceProfileViewSet,
+    LeadershipProfileViewSet,
+    PersonalProfileViewSet,
+    GPARecordViewSet,
+    EventActivityViewSet,
+)
+
+router = DefaultRouter()
+router.register(
+    r"service-activities", ServiceActivityViewSet, basename="service-activity"
+)
+router.register(
+    r"leadership-activities", LeadershipActivityViewSet, basename="leadership-activity"
+)
+router.register(r"service-profiles", ServiceProfileViewSet, basename="service-profile")
+router.register(
+    r"leadership-profiles", LeadershipProfileViewSet, basename="leadership-profile"
+)
+router.register(
+    r"personal-profiles", PersonalProfileViewSet, basename="personal-profile"
+)
+router.register(r"gpa-records", GPARecordViewSet, basename="gpa-record")
+router.register(r"event-activities", EventActivityViewSet, basename="event-activity")
 
 urlpatterns = [
-    path(
-        "create-service-activity/",
-        CreateServiceActivity.as_view(),
-        name="create-service-activity",
-    ),
-    path(
-        "delete-service-activity/<int:pk>/",
-        DeleteServiceActivity.as_view(),
-        name="delete-service-activity",
-    ),
-    path(
-        "update-service-activity/<int:pk>/",
-        UpdateServiceActivity.as_view(),
-        name="update-service-activity",
-    ),
-    path(
-        "create-leadership-activity/",
-        CreateLeadershipActivity.as_view(),
-        name="create-leadership-activity",
-    ),
-    path(
-        "delete-leadership-activity/<int:pk>/",
-        DeleteLeadershipActivity.as_view(),
-        name="delete-leadership-activity",
-    ),
-    path(
-        "update-leadership-activity/<int:pk>/",
-        UpdateLeadershipActivity.as_view(),
-        name="update-leadership-activity",
-    ),
-    path(
-        "get-service-profile/<int:pk>/",
-        RetrieveServiceProfile.as_view(),
-        name="get-service-profile",
-    ),
-    path(
-        "get-personal-profile/<int:pk>/",
-        RetrievePersonalProfile.as_view(),
-        name="get-personal-profile",
-    ),
-    path(
-        "update-personal-profile/<int:pk>/",
-        UpdatePersonalProfile.as_view(),
-        name="update-personal-profile",
-    ),
-    path(
-        "get-leadership-profile/<int:pk>/",
-        RetrieveLeadershipProfile.as_view(),
-        name="retrieve-leadership-profile",
-    ),
-    path(
-        "update-gpa-record/<int:pk>/",
-        UpdateGPARecord.as_view(),
-        name="update-gpa-record",
-    ),
-    path(
-        "create-event-activity/",
-        CreateEventActivity.as_view(),
-        name="create-event-activity",
-    ),
+    path("", include(router.urls)),
 ]

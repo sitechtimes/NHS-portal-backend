@@ -1,75 +1,28 @@
-from django.urls import path
-from .views import *
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+from .views import (
+    StudentViewSet,
+    AnnouncementViewSet,
+    BiographicalQuestionViewSet,
+    BiographicalQuestionInstanceViewSet,
+    RecommendationViewSet,
+)
+
+router = DefaultRouter()
+router.register(r"students", StudentViewSet, basename="guidance-user")
+router.register(r"announcements", AnnouncementViewSet, basename="announcement")
+router.register(
+    r"questions",
+    BiographicalQuestionViewSet,
+    basename="question",
+)
+router.register(
+    r"question-instances",
+    BiographicalQuestionInstanceViewSet,
+    basename="question-instances",
+)
+router.register(r"recommendations", RecommendationViewSet, basename="recommendation")
 
 urlpatterns = [
-    path("student-view/<int:pk>/", StudentView.as_view(), name="view-student"),
-    path(
-        "expanded-student-view/<int:pk>/",
-        ExpandedStudentView.as_view(),
-        name="expanded-student-view",
-    ),
-    path(
-        "multiple-students-view/",
-        MultipleStudentsView.as_view(),
-        name="multiple-students-view",
-    ),
-    path(
-        "filter-students-view/",
-        FilterStudentsView.as_view(),
-        name="filter-students-view",
-    ),
-    path(
-        "all-students-view/",
-        AllStudentsView.as_view(),
-        name="all-students-view",
-    ),
-    path(
-        "give-recommendation/", GiveRecommendation.as_view(), name="give-recommendation"
-    ),
-    path(
-        "create-announcement/",
-        CreateAnnouncement.as_view(),
-        name="create-announcement",
-    ),
-    path(
-        "delete-announcement/<int:pk>/",
-        DeleteAnnouncement.as_view(),
-        name="delete-announcement",
-    ),
-    path("announcements/", AnnouncementView.as_view(), name="announcements"),
-    path(
-        "create-biographical-question/",
-        CreateBiographicalQuestion.as_view(),
-        name="create-biographical-question",
-    ),
-    path(
-        "delete-biographical-question/<int:pk>/",
-        DeleteBiographicalQuestion.as_view(),
-        name="delete-biographical-question",
-    ),
-    path(
-        "biographical-questions/",
-        BiographicalQuestionsView.as_view(),
-        name="biographical-questions",
-    ),
-    path(
-        "submit-question-instance/<int:pk>/",
-        SubmitQuestionInstanceView.as_view(),
-        name="submit-question-instance",
-    ),
-    path(
-        "request-recommendation/",
-        RequestRecommendation.as_view(),
-        name="request-recommendation",
-    ),
-    path(
-        "approve-recommendation/<int:pk>/",
-        ApproveRecommendation.as_view(),
-        name="approve-recommendation",
-    ),
-    path(
-        "deny-recommendation/<int:pk>/",
-        DenyRecommendation.as_view(),
-        name="deny-recommendation",
-    ),
+    path("", include(router.urls)),
 ]

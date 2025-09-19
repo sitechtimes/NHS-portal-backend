@@ -1,23 +1,8 @@
 import json
+from rest_framework import mixins, viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.generics import (
-    CreateAPIView,
-    DestroyAPIView,
-    RetrieveAPIView,
-    ListAPIView,
-    GenericAPIView,
-    UpdateAPIView,
-)
 from rest_framework.permissions import IsAuthenticated
-from backend.permissions import (
-    IsStudent,
-    IsTeacher,
-    IsGuidance,
-    IsAdmin,
-    IsSelf,
-    OwnsQuestionInstance,
-)
 from users.models import CustomUser
 from users.serializers import UserSerializer, ExpandedUserSerializer
 from .models import (
@@ -32,164 +17,172 @@ from .serializers import (
     BiographicalQuestionInstanceSerializer,
     RecommendationSerializer,
 )
+from backend.permissions import (
+    IsStudent,
+    IsTeacher,
+    IsGuidance,
+    IsAdmin,
+    IsSelf,
+    OwnsQuestionInstance,
+)
 
 
-class StudentView(RetrieveAPIView):
+class StudentViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
+    """
+    - retrieve: GET /guidance/users/{pk}/  (student detail)
+    - list: GET /guidance/users/           (all students)
+    - GET /guidance/users/{pk}/expanded/  (expanded student view)
+    - GET /guidance/users/multiple/?ids=[1,2]  (multiple students)
+    - GET /guidance/users/filter/?first_name=...  (filter)
+    """
+
     queryset = CustomUser.objects.filter(user_type="0")
     serializer_class = UserSerializer
-    permission_classes = [IsSelf | IsGuidance | IsAdmin]
 
+    def get_permissions(self):
+        if self.action in ("retrieve", "list", "multiple", "filter", "expanded"):
+            perms = [IsSelf | IsGuidance | IsAdmin]
+        elif self.action == "give_recommendation":
+            perms = [IsTeacher | IsAdmin]
+        else:
+            perms = [IsGuidance | IsAdmin]
+        return [p() for p in perms]
 
-class ExpandedStudentView(RetrieveAPIView):
-    queryset = CustomUser.objects.filter(user_type="0")
-    serializer_class = ExpandedUserSerializer
-    permission_classes = [IsSelf | IsGuidance | IsAdmin]
+    @action(detail=True, methods=["get"])
+    def expanded(self, request, pk=None):
+        user = self.get_object()
+        serializer = ExpandedUserSerializer(user, context={"request": request})
+        return Response(serializer.data)
 
+    @action(detail=False, methods=["get"])
+    def multiple(self, request):
+        ids_raw = request.query_params.get("ids")
+        try:
+            ids = json.loads(ids_raw) if ids_raw else []
+        except Exception:
+            return Response(
+                {"detail": "Invalid ids parameter"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        users = CustomUser.objects.filter(user_type="0", id__in=ids)
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
-class MultipleStudentsView(ListAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [IsGuidance | IsAdmin]
-
-    def get_queryset(self):
-        return CustomUser.objects.filter(
-            user_type="0", id__in=json.loads(self.request.query_params.get("ids"))
-        )
-
-
-class FilterStudentsView(ListAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [IsGuidance | IsAdmin]
-
-    def get_queryset(self):
-        params = self.request.query_params
+    @action(detail=False, methods=["get"])
+    def filter(self, request):
+        params = request.query_params
         queryset = CustomUser.objects.filter(user_type="0")
         for param in params:
-            if param in [
-                "first_name",
-                "last_name",
-                "official_class",
-                "email",
-            ]:
+            if param in ["first_name", "last_name", "official_class", "email"]:
                 queryset = queryset.filter(**{f"{param}__icontains": params.get(param)})
-
-        return queryset
-
-
-class AllStudentsView(ListAPIView):
-    queryset = CustomUser.objects.filter(user_type="0")
-    serializer_class = UserSerializer
-    permission_classes = [IsGuidance | IsAdmin]
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
-class GiveRecommendation(GenericAPIView):
-    permission_classes = [IsTeacher | IsAdmin]
-    serializer_class = ExpandedUserSerializer
+class AnnouncementViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    - create: POST /guidance/announcements/  (create announcement)
+    - list: GET /guidance/announcements/     (list announcements)
+    - destroy: DELETE /guidance/announcements/{pk}/  (delete announcement)
+    - submit: POST /guidance/announcements/{pk}/submit/  (submit announcement)
+    """
 
-    def post(self, request):
-        student_id = request.data.get("student_id")
-        recommendation_type = request.data.get("recommendation_type")
-        if recommendation_type not in [
-            "service",
-            "leadership",
-            "character",
-            "scholarship",
-        ]:
-            return Response(
-                {"error": "Invalid recommendation type."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        student = CustomUser.objects.get(id=student_id, user_type="0")
-
-        if recommendation_type == "service":
-            profile = student.service_profile
-            profile.recommendation_given = True
-        else:
-            profile = student.leadership_profile
-            if recommendation_type == "leadership":
-                profile.leadership_recommendation_given = True
-            elif recommendation_type == "character":
-                profile.character_recommendation_given = True
-            elif recommendation_type == "scholarship":
-                profile.scholarship_recommendation_given = True
-        profile.save()
-
-        serializer = self.get_serializer(student)
-        return Response(serializer.data, status=200)
-
-
-class CreateAnnouncement(CreateAPIView):
-    queryset = Announcement.objects.all()
-    serializer_class = AnnouncementSerializer
-    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
-
-
-class DeleteAnnouncement(DestroyAPIView):
-    queryset = Announcement.objects.all()
-    serializer_class = AnnouncementSerializer
-    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
-
-
-class AnnouncementView(ListAPIView):
     queryset = Announcement.objects.all().order_by("-created_at")
     serializer_class = AnnouncementSerializer
-    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ("create", "destroy"):
+            perms = [IsTeacher | IsGuidance | IsAdmin]
+        else:  # list
+            perms = [IsAuthenticated]
+        return [p() for p in perms]
 
 
-class CreateBiographicalQuestion(CreateAPIView):
+class BiographicalQuestionViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = BiographicalQuestion.objects.all()
     serializer_class = BiographicalQuestionSerializer
-    permission_classes = [IsGuidance | IsAdmin]
+
+    def get_permissions(self):
+        if self.action in ("create", "destroy"):
+            perms = [IsGuidance | IsAdmin]
+        else:
+            perms = [IsGuidance | IsAdmin]
+        return [p() for p in perms]
 
 
-# When created, a signal creates the instances for all students
+class BiographicalQuestionInstanceViewSet(
+    mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
+    """
+    - update: PATCH /guidance/question-instances/{pk}/     (update question instance)
+    """
 
-
-class BiographicalQuestionsView(ListAPIView):
-    queryset = BiographicalQuestion.objects.all()
-    serializer_class = BiographicalQuestionSerializer
-    permission_classes = [IsGuidance | IsAdmin]
-
-
-class DeleteBiographicalQuestion(DestroyAPIView):
-    queryset = BiographicalQuestion.objects.all()
-    serializer_class = BiographicalQuestionSerializer
-    permission_classes = [IsGuidance | IsAdmin]
-
-
-class SubmitQuestionInstanceView(UpdateAPIView):
     queryset = BiographicalQuestionInstance.objects.all()
     serializer_class = BiographicalQuestionInstanceSerializer
-    permission_classes = [OwnsQuestionInstance | IsAdmin]
+
+    def get_permissions(self):
+        if self.action in ("update", "partial_update"):
+            perms = [OwnsQuestionInstance | IsAdmin]
+        else:
+            perms = [IsGuidance | IsAdmin]
+        return [p() for p in perms]
 
 
-class RequestRecommendation(CreateAPIView):
-    queryset = Recommendation.objects.all()
+class RecommendationViewSet(viewsets.ModelViewSet):
+    queryset = Recommendation.objects.all().order_by("-submitted_at")
     serializer_class = RecommendationSerializer
-    permission_classes = [IsSelf | IsAdmin]
 
+    def get_permissions(self):
+        if self.action in ("approve", "deny"):
+            perms = [IsTeacher | IsGuidance | IsAdmin]
+        elif self.action == "create":
+            perms = [IsSelf | IsAdmin]
+        else:
+            perms = [IsTeacher | IsGuidance | IsAdmin]
+        return [p() for p in perms]
 
-class ApproveRecommendation(GenericAPIView):
-    queryset = Recommendation.objects.all()
-    serializer_class = RecommendationSerializer
-    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        rtype = request.data.get("recommendation_type")
+        if Recommendation.objects.filter(
+            user=user, recommendation_type=rtype, approved__in=[True, None]
+        ).exists():
+            return Response(
+                {"detail": "A request of this type is already pending or approved."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return super().create(request, *args, **kwargs)
 
-    def post(self, request, pk):
-        recommendation = self.get_object()
-        recommendation.approved = True
-        recommendation.save()
-        serializer = self.get_serializer(recommendation)
-        return Response(serializer.data, status=200)
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsTeacher | IsGuidance | IsAdmin],
+    )
+    def approve(self, request, pk=None):
+        rec = self.get_object()
+        rec.approved = True
+        rec.save()
+        return Response(self.get_serializer(rec).data, status=status.HTTP_200_OK)
 
-
-class DenyRecommendation(GenericAPIView):
-    queryset = Recommendation.objects.all()
-    serializer_class = RecommendationSerializer
-    permission_classes = [IsTeacher | IsGuidance | IsAdmin]
-
-    def post(self, request, pk):
-        recommendation = self.get_object()
-        recommendation.approved = False
-        recommendation.save()
-        serializer = self.get_serializer(recommendation)
-        return Response(serializer.data, status=200)
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsTeacher | IsGuidance | IsAdmin],
+    )
+    def deny(self, request, pk=None):
+        rec = self.get_object()
+        rec.approved = False
+        rec.save()
+        return Response(self.get_serializer(rec).data, status=status.HTTP_200_OK)

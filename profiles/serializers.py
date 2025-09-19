@@ -117,8 +117,6 @@ class GPARecordSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.gpa = validated_data.get("gpa")
-        instance.semester = validated_data.get("semester")
-        instance.year = validated_data.get("year")
         instance.save()
         return instance
 
@@ -149,7 +147,7 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
+class ServiceProfileSerializer(serializers.ModelSerializer):
     service_activities = ServiceActivitySerializer(many=True)
     event_activities = EventActivitySerializer(many=True)
     total_hours = serializers.SerializerMethodField()
@@ -209,7 +207,7 @@ class LeadershipProfileSerializer(serializers.ModelSerializer):
         return validated_data
 
 
-class ExpandedLeadershipProfileSerializer(serializers.ModelSerializer):
+class LeadershipProfileSerializer(serializers.ModelSerializer):
     leadership_activities = LeadershipActivitySerializer(many=True)
 
     class Meta:

@@ -16,7 +16,6 @@ class EventSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        request = self.context.get("request")
         if validated_data["time_start"] >= validated_data["time_end"]:
             raise serializers.ValidationError(
                 "Event end time must be after event start time."
