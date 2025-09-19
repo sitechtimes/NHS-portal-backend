@@ -1,13 +1,10 @@
-import email
-import os
-from rest_framework import permissions, viewsets, serializers
+from rest_framework import serializers
 from events.serializers import EventSerializer
 from profiles.models import (
     ServiceProfile,
     LeadershipProfile,
     PersonalProfile,
     ServiceActivity,
-    ServiceEvent,
     LeadershipActivity,
     GPARecord,
     EventActivity,

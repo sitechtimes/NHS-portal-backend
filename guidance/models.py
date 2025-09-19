@@ -1,7 +1,5 @@
 from django.db import models
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from users.models import CustomUser
 
 
 class Announcement(models.Model):
@@ -36,7 +34,9 @@ class BiographicalQuestion(models.Model):
 
 class BiographicalQuestionInstance(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="biographical_question_instances"
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="biographical_question_instances",
     )
     question = models.ForeignKey(BiographicalQuestion, on_delete=models.CASCADE)
     answer = models.TextField()
@@ -53,7 +53,7 @@ class Recommendation(models.Model):
         ("scholarship", "scholarship"),
     ]
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="recommendations"
+        CustomUser, on_delete=models.CASCADE, related_name="recommendations"
     )
     recommendation_type = models.CharField(max_length=20, choices=REQUEST_TYPE_CHOICES)
     teacher_email = models.EmailField()
