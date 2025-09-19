@@ -2,7 +2,6 @@ import os
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from users.models import CustomUser
 from profiles.serializers import (
     ServiceActivitySerializer,
     LeadershipActivitySerializer,
@@ -41,7 +40,6 @@ class ServiceActivityViewSet(
 ):
     """ "
     - create: POST /profiles/service_activities/  (create activity)
-    - update: PUT /profiles/service_activities/{pk}/  (update activity)
     - partial_update: PATCH /profiles/service_activities/{pk}/  (partial update)
     - destroy: DELETE /profiles/service_activities/{pk}/  (delete activity)
     """
@@ -52,10 +50,10 @@ class ServiceActivityViewSet(
     def get_permissions(self):
         if self.action == "create":
             perms = [IsStudent]
-        elif self.action in ("update", "partial_update", "destroy"):
+        elif self.action in ("partial_update", "destroy"):
             perms = [OwnsServiceProfileOfObject | IsGuidance | IsAdmin]
         else:
-            perms = [IsAuthenticated]
+            perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
 
 
@@ -77,10 +75,10 @@ class LeadershipActivityViewSet(
     def get_permissions(self):
         if self.action == "create":
             perms = [IsStudent]
-        elif self.action in ("update", "partial_update", "destroy"):
+        elif self.action in ("partial_update", "destroy"):
             perms = [OwnsLeadershipProfileOfObject | IsGuidance | IsAdmin]
         else:
-            perms = [IsAuthenticated]
+            perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
 
 
@@ -93,7 +91,8 @@ class ServiceProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = ServiceProfileSerializer
 
     def get_permissions(self):
-        perms = [IsOwner | IsGuidance | IsAdmin]
+        if self.action == "retrieve":
+            perms = [IsOwner | IsGuidance | IsAdmin]
         return [p() for p in perms]
 
 
@@ -124,7 +123,7 @@ class PersonalProfileViewSet(
     def get_permissions(self):
         if self.action == "partial_update":
             perms = [IsGuidance | IsAdmin]
-        else:  # retrieve
+        elif self.action == "retrieve":
             perms = [IsOwner | IsGuidance | IsAdmin]
         return [p() for p in perms]
 
@@ -138,7 +137,8 @@ class GPARecordViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     serializer_class = GPARecordSerializer
 
     def get_permissions(self):
-        perms = [OwnsPersonalProfileOfObject | IsGuidance | IsAdmin]
+        if self.action == "partial_update":
+            perms = [OwnsPersonalProfileOfObject | IsGuidance | IsAdmin]
         return [p() for p in perms]
 
 
@@ -155,7 +155,6 @@ class EventActivityViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         # allow the external service to POST (auth via api_key)
         if self.action == "create":
             return [AllowAny()]
-        return [IsAuthenticated()]
 
     def create(self, request, *args, **kwargs):
         api_key = request.data.get("api_key")

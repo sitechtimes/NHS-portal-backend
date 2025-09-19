@@ -12,9 +12,9 @@ class EventViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = ServiceEvent.objects.all()
     serializer_class = EventSerializer
 
-    action_permissions = {
-        "create": [IsTeacher(), IsGuidance(), IsAdmin()],
-    }
-
     def get_permissions(self):
-        return self.action_permissions.get(self.action)
+        if self.action == "create":
+            perms = [IsTeacher | IsGuidance | IsAdmin]
+        else:
+            perms = [IsGuidance | IsAdmin]
+        return [p() for p in perms]

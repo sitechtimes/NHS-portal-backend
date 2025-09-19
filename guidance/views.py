@@ -18,7 +18,6 @@ from .serializers import (
     RecommendationSerializer,
 )
 from backend.permissions import (
-    IsStudent,
     IsTeacher,
     IsGuidance,
     IsAdmin,
@@ -42,12 +41,10 @@ class StudentViewSet(
     serializer_class = UserSerializer
 
     def get_permissions(self):
-        if self.action in ("retrieve", "list", "multiple", "filter", "expanded"):
-            perms = [IsSelf | IsGuidance | IsAdmin]
-        elif self.action == "give_recommendation":
-            perms = [IsTeacher | IsAdmin]
-        else:
+        if self.action in ("list", "multiple", "filter"):
             perms = [IsGuidance | IsAdmin]
+        elif self.action in ("retrieve", "expanded"):
+            perms = [IsSelf | IsGuidance | IsAdmin]
         return [p() for p in perms]
 
     @action(detail=True, methods=["get"])
@@ -84,14 +81,12 @@ class AnnouncementViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.DestroyModelMixin,
-    mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
 ):
     """
     - create: POST /guidance/announcements/  (create announcement)
     - list: GET /guidance/announcements/     (list announcements)
     - destroy: DELETE /guidance/announcements/{pk}/  (delete announcement)
-    - submit: POST /guidance/announcements/{pk}/submit/  (submit announcement)
     """
 
     queryset = Announcement.objects.all().order_by("-created_at")
@@ -100,7 +95,7 @@ class AnnouncementViewSet(
     def get_permissions(self):
         if self.action in ("create", "destroy"):
             perms = [IsTeacher | IsGuidance | IsAdmin]
-        else:  # list
+        elif self.action == "list":
             perms = [IsAuthenticated]
         return [p() for p in perms]
 
@@ -111,14 +106,20 @@ class BiographicalQuestionViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
+    """
+    - create: POST /guidance/questions/  (create question)
+    - list: GET /guidance/questions/     (list questions)
+    - destroy: DELETE /guidance/questions/{pk}/  (delete question)
+    """
+
     queryset = BiographicalQuestion.objects.all()
     serializer_class = BiographicalQuestionSerializer
 
     def get_permissions(self):
         if self.action in ("create", "destroy"):
             perms = [IsGuidance | IsAdmin]
-        else:
-            perms = [IsGuidance | IsAdmin]
+        elif self.action == "list":
+            perms = [IsAuthenticated]
         return [p() for p in perms]
 
 
@@ -133,7 +134,7 @@ class BiographicalQuestionInstanceViewSet(
     serializer_class = BiographicalQuestionInstanceSerializer
 
     def get_permissions(self):
-        if self.action in ("update", "partial_update"):
+        if self.action == "partial_update":
             perms = [OwnsQuestionInstance | IsAdmin]
         else:
             perms = [IsGuidance | IsAdmin]
@@ -150,7 +151,7 @@ class RecommendationViewSet(viewsets.ModelViewSet):
         elif self.action == "create":
             perms = [IsSelf | IsAdmin]
         else:
-            perms = [IsTeacher | IsGuidance | IsAdmin]
+            perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
 
     def create(self, request, *args, **kwargs):
@@ -165,22 +166,14 @@ class RecommendationViewSet(viewsets.ModelViewSet):
             )
         return super().create(request, *args, **kwargs)
 
-    @action(
-        detail=True,
-        methods=["post"],
-        permission_classes=[IsTeacher | IsGuidance | IsAdmin],
-    )
+    @action(detail=True, methods=["post"])
     def approve(self, request, pk=None):
         rec = self.get_object()
         rec.approved = True
         rec.save()
         return Response(self.get_serializer(rec).data, status=status.HTTP_200_OK)
 
-    @action(
-        detail=True,
-        methods=["post"],
-        permission_classes=[IsTeacher | IsGuidance | IsAdmin],
-    )
+    @action(detail=True, methods=["post"])
     def deny(self, request, pk=None):
         rec = self.get_object()
         rec.approved = False
