@@ -45,7 +45,7 @@ class BiographicalQuestionInstance(models.Model):
         return f"{self.user.username} - {self.question.question_text}"
 
 
-class RecommendationRequest(models.Model):
+class Recommendation(models.Model):
     REQUEST_TYPE_CHOICES = [
         ("service", "service"),
         ("leadership", "leadership"),
@@ -53,9 +53,9 @@ class RecommendationRequest(models.Model):
         ("scholarship", "scholarship"),
     ]
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="recommendation_requests"
+        User, on_delete=models.CASCADE, related_name="recommendations"
     )
-    request_type = models.CharField(max_length=20, choices=REQUEST_TYPE_CHOICES)
+    recommendation_type = models.CharField(max_length=20, choices=REQUEST_TYPE_CHOICES)
     teacher_email = models.EmailField()
     submitted_at = models.DateTimeField(auto_now_add=True)
-    accepted = models.BooleanField(default=False)
+    approved = models.BooleanField(null=True)

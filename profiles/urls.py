@@ -33,19 +33,9 @@ urlpatterns = [
         name="update-leadership-activity",
     ),
     path(
-        "update-service-profile/<int:pk>/",
-        UpdateServiceProfile.as_view(),
-        name="update-service-profile",
-    ),
-    path(
         "get-service-profile/<int:pk>/",
         RetrieveServiceProfile.as_view(),
         name="get-service-profile",
-    ),
-    path(
-        "update-leadership-profile/<int:pk>/",
-        UpdateLeadershipProfile.as_view(),
-        name="update-leadership-profile",
     ),
     path(
         "get-personal-profile/<int:pk>/",

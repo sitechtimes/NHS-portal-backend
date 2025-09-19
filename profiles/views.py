@@ -80,21 +80,11 @@ class UpdateLeadershipActivity(UpdateAPIView):
 
 
 # Profile Views
-class UpdateServiceProfile(UpdateAPIView):
-    queryset = ServiceProfile.objects.all()
-    serializer_class = ServiceProfileSerializer
-    permission_classes = [IsOwner | IsGuidance | IsAdmin]
 
 
 class RetrieveServiceProfile(RetrieveAPIView):
     queryset = ServiceProfile.objects.all()
     serializer_class = ExpandedServiceProfileSerializer
-    permission_classes = [IsOwner | IsGuidance | IsAdmin]
-
-
-class UpdateLeadershipProfile(UpdateAPIView):
-    queryset = LeadershipProfile.objects.all()
-    serializer_class = LeadershipProfileSerializer
     permission_classes = [IsOwner | IsGuidance | IsAdmin]
 
 

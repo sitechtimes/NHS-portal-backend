@@ -1,12 +1,14 @@
-from rest_framework import permissions, viewsets, serializers
+from rest_framework import serializers
 from users.models import CustomUser
 from profiles.serializers import (
     ExpandedServiceProfileSerializer,
     ExpandedLeadershipProfileSerializer,
     PersonalProfileSerializer,
 )
-from guidance.models import BiographicalQuestionInstance
-from guidance.serializers import BiographicalQuestionInstanceSerializer
+from guidance.serializers import (
+    BiographicalQuestionInstanceSerializer,
+    RecommendationSerializer,
+)
 from django.db.models import Sum
 from django.db.models import Sum, F, ExpressionWrapper, DurationField
 from django.db.models.functions import Coalesce
@@ -56,6 +58,7 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
     personal_profile = PersonalProfileSerializer()
     biographical_question_instances = BiographicalQuestionInstanceSerializer(many=True)
     total_hours = serializers.SerializerMethodField()
+    recommendations = RecommendationSerializer(many=True)
 
     class Meta:
         model = CustomUser
@@ -71,7 +74,7 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
             "personal_profile",
             "biographical_question_instances",
             "total_hours",
-            "recommendation_requests",
+            "recommendations",
         ]
 
     def get_total_hours(self, obj):

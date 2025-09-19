@@ -125,8 +125,8 @@ class GPARecordSerializer(serializers.ModelSerializer):
 class ServiceProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceProfile
-        fields = ["id", "recommendation_teacher"]
-        read_only_fields = ["recommendation_given", "user"]
+        fields = ["id"]
+        read_only_fields = ["user"]
 
     def create(self, validated_data):
         user = CustomUser.objects.get(id=validated_data["user_id"])
@@ -155,8 +155,6 @@ class ExpandedServiceProfileSerializer(serializers.ModelSerializer):
         model = ServiceProfile
         fields = [
             "id",
-            "recommendation_teacher",
-            "recommendation_given",
             "service_activities",
             "event_activities",
         ]
@@ -168,16 +166,8 @@ class LeadershipProfileSerializer(serializers.ModelSerializer):
         model = LeadershipProfile
         fields = [
             "id",
-            "teacher_leadership",
-            "teacher_character",
-            "teacher_scholarship",
         ]
-        read_only_fields = [
-            "leadership_recommendation_given",
-            "character_recommendation_given",
-            "scholarship_recommendation_given",
-            "user",
-        ]
+        read_only_fields = ["id"]
 
     def create(self, validated_data):
         user = CustomUser.objects.get(id=validated_data["user_id"])
@@ -192,13 +182,6 @@ class LeadershipProfileSerializer(serializers.ModelSerializer):
             profile.delete()
         return validated_data
 
-    def update(self, instance, validated_data):
-        instance.teacher_leadership = validated_data.get("teacher_leadership")
-        instance.teacher_character = validated_data.get("teacher_character")
-        instance.teacher_scholarship = validated_data.get("teacher_scholarship")
-        instance.save()
-        return instance
-
 
 class ExpandedLeadershipProfileSerializer(serializers.ModelSerializer):
     leadership_activities = LeadershipActivitySerializer(many=True)
@@ -207,15 +190,9 @@ class ExpandedLeadershipProfileSerializer(serializers.ModelSerializer):
         model = LeadershipProfile
         fields = [
             "id",
-            "teacher_leadership",
-            "leadership_recommendation_given",
-            "teacher_character",
-            "character_recommendation_given",
-            "teacher_scholarship",
-            "scholarship_recommendation_given",
             "leadership_activities",
         ]
-        read_only_fields = ["user"]
+        read_only_fields = ["id"]
 
 
 class PersonalProfileSerializer(serializers.ModelSerializer):
@@ -224,7 +201,6 @@ class PersonalProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonalProfile
         fields = ["id", "gpa_records", "character_issues", "notes"]
-        read_only_fields = ["user"]
 
     def update(self, instance, validated_data):
         instance.character_issues = validated_data.get("character_issues")

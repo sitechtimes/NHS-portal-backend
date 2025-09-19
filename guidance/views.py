@@ -1,7 +1,4 @@
 import json
-from typing import Generic
-from django.shortcuts import render
-from django.core.mail import send_mass_mail
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import (
@@ -12,7 +9,6 @@ from rest_framework.generics import (
     GenericAPIView,
     UpdateAPIView,
 )
-from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from backend.permissions import (
     IsStudent,
@@ -24,11 +20,17 @@ from backend.permissions import (
 )
 from users.models import CustomUser
 from users.serializers import UserSerializer, ExpandedUserSerializer
-from .models import Announcement, BiographicalQuestion, BiographicalQuestionInstance
+from .models import (
+    Announcement,
+    BiographicalQuestion,
+    BiographicalQuestionInstance,
+    Recommendation,
+)
 from .serializers import (
     AnnouncementSerializer,
     BiographicalQuestionSerializer,
     BiographicalQuestionInstanceSerializer,
+    RecommendationSerializer,
 )
 
 
@@ -159,3 +161,35 @@ class SubmitQuestionInstanceView(UpdateAPIView):
     queryset = BiographicalQuestionInstance.objects.all()
     serializer_class = BiographicalQuestionInstanceSerializer
     permission_classes = [OwnsQuestionInstance | IsGuidance | IsAdmin]
+
+
+class RequestRecommendation(CreateAPIView):
+    queryset = Recommendation.objects.all()
+    serializer_class = RecommendationSerializer
+    permission_classes = [IsSelf | IsGuidance | IsAdmin]
+
+
+class ApproveRecommendation(GenericAPIView):
+    queryset = Recommendation.objects.all()
+    serializer_class = RecommendationSerializer
+    permission_classes = [IsGuidance | IsAdmin]
+
+    def post(self, request, pk):
+        recommendation = self.get_object()
+        recommendation.approved = True
+        recommendation.save()
+        serializer = self.get_serializer(recommendation)
+        return Response(serializer.data, status=200)
+
+
+class DenyRecommendation(GenericAPIView):
+    queryset = Recommendation.objects.all()
+    serializer_class = RecommendationSerializer
+    permission_classes = [IsGuidance | IsAdmin]
+
+    def post(self, request, pk):
+        recommendation = self.get_object()
+        recommendation.approved = False
+        recommendation.save()
+        serializer = self.get_serializer(recommendation)
+        return Response(serializer.data, status=200)

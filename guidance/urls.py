@@ -57,4 +57,19 @@ urlpatterns = [
         SubmitQuestionInstanceView.as_view(),
         name="submit-question-instance",
     ),
+    path(
+        "request-recommendation/",
+        RequestRecommendation.as_view(),
+        name="request-recommendation",
+    ),
+    path(
+        "approve-recommendation/<int:pk>/",
+        ApproveRecommendation.as_view(),
+        name="approve-recommendation",
+    ),
+    path(
+        "deny-recommendation/<int:pk>/",
+        DenyRecommendation.as_view(),
+        name="deny-recommendation",
+    ),
 ]

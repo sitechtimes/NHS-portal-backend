@@ -1,6 +1,12 @@
+from urllib import request
 from requests import delete
 from rest_framework import serializers
-from .models import Announcement, BiographicalQuestion, BiographicalQuestionInstance
+from .models import (
+    Announcement,
+    BiographicalQuestion,
+    BiographicalQuestionInstance,
+    Recommendation,
+)
 from users.models import CustomUser
 import json
 from rest_framework.response import Response
@@ -124,3 +130,32 @@ class BiographicalQuestionInstanceSerializer(serializers.ModelSerializer):
         instance.answer = validated_data.get("answer")
         instance.save()
         return instance
+
+
+class RecommendationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recommendation
+        fields = [
+            "id",
+            "recommendation_type",
+            "teacher_email",
+            "submitted_at",
+            "approved",
+        ]
+        read_only_fields = ["id", "submitted_at", "approved"]
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        if Recommendation.objects.filter(
+            user=request.user,
+            recommendation_type=validated_data["recommendation_type"],
+        ).exists():
+            raise serializers.ValidationError(
+                "You have already requested this type of recommendation."
+            )
+        recommendation = Recommendation.objects.create(
+            user=request.user,
+            recommendation_type=validated_data["recommendation_type"],
+            teacher_email=validated_data["teacher_email"],
+        )
+        return recommendation
