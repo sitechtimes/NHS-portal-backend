@@ -39,12 +39,6 @@ class ServiceActivityViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    """ "
-    - create: POST /profiles/service_activities/  (create activity)
-    - partial_update: PATCH /profiles/service_activities/{pk}/  (partial update)
-    - destroy: DELETE /profiles/service_activities/{pk}/  (delete activity)
-    """
-
     queryset = ServiceActivity.objects.all()
     serializer_class = ServiceActivitySerializer
 
@@ -64,12 +58,6 @@ class LeadershipActivityViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    """
-    - create: POST /profiles/leadership_activities/  (create activity)
-    - partial_update: PATCH /profiles/leadership_activities/{pk}/  (partial update)
-    - destroy: DELETE /profiles/leadership_activities/{pk}/  (delete activity
-    """
-
     queryset = LeadershipActivity.objects.all()
     serializer_class = LeadershipActivitySerializer
 
@@ -84,12 +72,6 @@ class LeadershipActivityViewSet(
 
 
 class ServiceProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    """
-    - retrieve: GET /profiles/service_profiles/{pk}/  (retrieve service profile)
-    - submit: POST /profiles/service_profiles/{pk}/submit/  (submit service profile)
-    - unsubmit: POST /profiles/service_profiles/{pk}/unsubmit/  (unsubmit service profile)
-    """
-
     queryset = ServiceProfile.objects.all()
     serializer_class = ServiceProfileSerializer
 
@@ -118,12 +100,6 @@ class ServiceProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 
 
 class LeadershipProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    """
-    - retrieve: GET /profiles/leadership_profiles/{pk}/  (retrieve leadership profile)
-    - submit: POST /profiles/leadership_profiles/{pk}/submit/  (submit leadership profile)
-    - unsubmit: POST /profiles/leadership_profiles/{pk}/unsubmit/  (unsubmit leadership profile)
-    """
-
     queryset = LeadershipProfile.objects.all()
     serializer_class = LeadershipProfileSerializer
 
@@ -154,13 +130,6 @@ class LeadershipProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSe
 class PersonalProfileViewSet(
     mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
 ):
-    """
-    - retrieve: GET /profiles/personal_profiles/{pk}/  (retrieve personal profile)
-    - partial_update: PATCH /profiles/personal_profiles/{pk}/  (partial update)
-    - submit: POST /profiles/personal_profiles/{pk}/submit/  (submit personal profile)
-    - unsubmit: POST /profiles/personal_profiles/{pk}/unsubmit/  (unsubmit personal profile)
-    """
-
     queryset = PersonalProfile.objects.all()
     serializer_class = PersonalProfileSerializer
 
@@ -193,10 +162,6 @@ class PersonalProfileViewSet(
 
 
 class GPARecordViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
-    """
-    - partial_update: PATCH /profiles/gpa_records/{pk}/  (partial update)
-    """
-
     queryset = GPARecord.objects.all()
     serializer_class = GPARecordSerializer
 
@@ -209,11 +174,6 @@ class GPARecordViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
 
 
 class EventActivityViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
-    """
-    Endpoint used by NFC backend to post event participation.
-    Only exposes create (POST) and validates EVENTS_API_KEY.
-    """
-
     queryset = EventActivity.objects.all()
     serializer_class = EventActivitySerializer
 

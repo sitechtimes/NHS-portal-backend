@@ -36,14 +36,6 @@ from rest_framework.generics import RetrieveAPIView
 class StudentViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):
-    """
-    - retrieve: GET /guidance/users/{pk}/  (student detail)
-    - list: GET /guidance/users/           (all students)
-    - GET /guidance/users/{pk}/expanded/  (expanded student view)
-    - GET /guidance/users/multiple/?ids=[1,2]  (multiple students)
-    - GET /guidance/users/filter/?first_name=...  (filter)
-    """
-
     queryset = CustomUser.objects.filter(user_type="0")
     serializer_class = UserSerializer
 
@@ -90,12 +82,6 @@ class AnnouncementViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    """
-    - create: POST /guidance/announcements/  (create announcement)
-    - list: GET /guidance/announcements/     (list announcements)
-    - destroy: DELETE /guidance/announcements/{pk}/  (delete announcement)
-    """
-
     queryset = Announcement.objects.all().order_by("-created_at")
     serializer_class = AnnouncementSerializer
 
@@ -113,12 +99,6 @@ class BiographicalQuestionViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    """
-    - create: POST /guidance/questions/  (create question)
-    - list: GET /guidance/questions/     (list questions)
-    - destroy: DELETE /guidance/questions/{pk}/  (delete question)
-    """
-
     queryset = BiographicalQuestion.objects.all()
     serializer_class = BiographicalQuestionSerializer
 
@@ -135,10 +115,6 @@ class BiographicalQuestionViewSet(
 class BiographicalQuestionInstanceViewSet(
     mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):
-    """
-    - update: PATCH /guidance/question-instances/{pk}/     (update question instance)
-    """
-
     queryset = BiographicalQuestionInstance.objects.all()
     serializer_class = BiographicalQuestionInstanceSerializer
 

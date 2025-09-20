@@ -5,10 +5,6 @@ from .serializers import EventSerializer
 
 
 class EventViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
-    """
-    - create: POST /events/  (create event)
-    """
-
     queryset = ServiceEvent.objects.all()
     serializer_class = EventSerializer
 
