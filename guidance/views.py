@@ -4,7 +4,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from users.models import CustomUser
-from users.serializers import UserSerializer, ExpandedUserSerializer
+from users.serializers import UserSerializer
+from guidance.serializers import ExpandedUserSerializer, TeacherSerializer
 from .models import (
     Announcement,
     BiographicalQuestion,
@@ -24,6 +25,7 @@ from backend.permissions import (
     IsSelf,
     OwnsQuestionInstance,
 )
+from rest_framework.generics import RetrieveAPIView
 
 
 class StudentViewSet(
@@ -120,6 +122,8 @@ class BiographicalQuestionViewSet(
             perms = [IsGuidance | IsAdmin]
         elif self.action == "list":
             perms = [IsAuthenticated]
+        else:
+            perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
 
 
@@ -179,3 +183,8 @@ class RecommendationViewSet(viewsets.ModelViewSet):
         rec.approved = False
         rec.save()
         return Response(self.get_serializer(rec).data, status=status.HTTP_200_OK)
+
+class TeacherDashboardView(RetrieveAPIView):
+    queryset = CustomUser.objects.filter(user_type="1")
+    serializer_class = TeacherSerializer
+    permission_classes = [IsSelf]

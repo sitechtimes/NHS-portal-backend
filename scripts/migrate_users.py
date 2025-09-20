@@ -63,7 +63,15 @@ def run(*args):
                     password=hashed_password,
                 )
             )
-
+    users_to_create.append(
+        CustomUser(
+            email="sam.kipnis@gmail.com",
+            first_name="Sam",
+            last_name="Kipnis",
+            user_type=1,
+            password=hashed_password,
+        )
+    )
     with transaction.atomic():
         for user in users_to_create:
             user.save()

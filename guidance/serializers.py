@@ -9,6 +9,12 @@ from users.models import CustomUser
 import json
 from rest_framework.response import Response
 from django.db.models import Q
+from users.serializers import UserSerializer
+from profiles.serializers import (
+    ServiceProfileSerializer,
+    LeadershipProfileSerializer,
+    PersonalProfileSerializer,
+)
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
@@ -159,3 +165,51 @@ class RecommendationSerializer(serializers.ModelSerializer):
             teacher_email=validated_data["teacher_email"],
         )
         return recommendation
+
+class ExpandedRecommendationSerializer(serializers.ModelSerializer):
+    student = serializers.SerializerMethodField()
+    class Meta:
+        model = Recommendation
+        fields = ["id", "recommendation_type", "teacher_email", "submitted_at", "approved", "student"]
+
+    def get_student(self, obj):
+        return UserSerializer(obj.user).data
+
+class ExpandedUserSerializer(serializers.ModelSerializer):
+    service_profile = ServiceProfileSerializer()
+    leadership_profile = LeadershipProfileSerializer()
+    personal_profile = PersonalProfileSerializer()
+    biographical_question_instances = BiographicalQuestionInstanceSerializer(many=True)
+    recommendations = RecommendationSerializer(many=True)
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "official_class",
+            "email",
+            "user_type",
+            "service_profile",
+            "leadership_profile",
+            "personal_profile",
+            "biographical_question_instances",
+            "recommendations",
+        ]
+
+
+class TeacherSerializer(serializers.ModelSerializer):
+    recommendation_requests = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomUser
+        fields = ["id", "first_name", "last_name", "email", "user_type", "recommendation_requests"]
+
+    def get_recommendation_requests(self, obj):
+        requests = Recommendation.objects.filter(
+            Q(teacher_email=obj.email) & (Q(approved=True) | Q(approved__isnull=True))
+        )
+        return ExpandedRecommendationSerializer(requests, many=True).data
+
+    
