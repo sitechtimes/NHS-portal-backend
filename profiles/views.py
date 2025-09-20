@@ -30,6 +30,7 @@ from backend.permissions import (
     OwnsLeadershipProfileOfObject,
     OwnsPersonalProfileOfObject,
 )
+from rest_framework.decorators import action
 
 
 class ServiceActivityViewSet(

@@ -166,14 +166,24 @@ class RecommendationSerializer(serializers.ModelSerializer):
         )
         return recommendation
 
+
 class ExpandedRecommendationSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField()
+
     class Meta:
         model = Recommendation
-        fields = ["id", "recommendation_type", "teacher_email", "submitted_at", "approved", "student"]
+        fields = [
+            "id",
+            "recommendation_type",
+            "teacher_email",
+            "submitted_at",
+            "approved",
+            "student",
+        ]
 
     def get_student(self, obj):
         return UserSerializer(obj.user).data
+
 
 class ExpandedUserSerializer(serializers.ModelSerializer):
     service_profile = ServiceProfileSerializer()
@@ -204,7 +214,14 @@ class TeacherSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["id", "first_name", "last_name", "email", "user_type", "recommendation_requests"]
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "user_type",
+            "recommendation_requests",
+        ]
 
     def get_recommendation_requests(self, obj):
         requests = Recommendation.objects.filter(
@@ -212,4 +229,14 @@ class TeacherSerializer(serializers.ModelSerializer):
         )
         return ExpandedRecommendationSerializer(requests, many=True).data
 
-    
+
+class GuidanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "user_type",
+        ]

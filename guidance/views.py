@@ -5,7 +5,11 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from users.models import CustomUser
 from users.serializers import UserSerializer
-from guidance.serializers import ExpandedUserSerializer, TeacherSerializer
+from guidance.serializers import (
+    ExpandedUserSerializer,
+    TeacherSerializer,
+    GuidanceSerializer,
+)
 from .models import (
     Announcement,
     BiographicalQuestion,
@@ -16,6 +20,7 @@ from .serializers import (
     AnnouncementSerializer,
     BiographicalQuestionSerializer,
     BiographicalQuestionInstanceSerializer,
+    GuidanceSerializer,
     RecommendationSerializer,
 )
 from backend.permissions import (
@@ -184,7 +189,14 @@ class RecommendationViewSet(viewsets.ModelViewSet):
         rec.save()
         return Response(self.get_serializer(rec).data, status=status.HTTP_200_OK)
 
+
 class TeacherDashboardView(RetrieveAPIView):
     queryset = CustomUser.objects.filter(user_type="1")
     serializer_class = TeacherSerializer
+    permission_classes = [IsSelf]
+
+
+class GuidanceDashboardView(RetrieveAPIView):
+    queryset = CustomUser.objects.filter(user_type="2")
+    serializer_class = GuidanceSerializer
     permission_classes = [IsSelf]
