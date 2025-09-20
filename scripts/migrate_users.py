@@ -10,8 +10,8 @@ from tqdm import tqdm
 def run(*args):
     print("\nStarting user migration...")
     use_fake_passwords = "fake" in args
-    base_dir = os.path.dirname(__file__)
-    csv_path = os.path.abspath(os.path.join(base_dir, "./data/students.csv"))
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    csv_path = os.path.abspath(os.path.join(BASE_DIR, "./data/students.csv"))
 
     seen_emails = set()
     users_to_create = []

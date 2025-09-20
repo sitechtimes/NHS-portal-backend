@@ -1,16 +1,26 @@
-# Use a base Python image
-FROM python:3.10
+# Use official lightweight Python image
+FROM python:3.11-slim
 
-# Set working directory
-WORKDIR /
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Copy files
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy and install Python dependencies
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy project files
 COPY . .
-RUN py manage.py runscript reset_db
+
 # Expose port
 EXPOSE 8000
 
-# Run the app
+# Default command
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
