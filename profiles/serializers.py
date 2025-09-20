@@ -25,6 +25,10 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context["request"].user
         service_profile = ServiceProfile.objects.get(user=user)
+        if service_profile.submitted:
+            raise serializers.ValidationError(
+                "Cannot create activity under submitted service profile."
+            )
         activity = ServiceActivity.objects.create(
             title=validated_data["title"],
             supervisor=validated_data["supervisor"],
@@ -37,11 +41,19 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
 
     def delete(self, validated_data):
         activity = ServiceActivity.objects.filter(id=validated_data.get("pk"))
+        if activity.service_profile.submitted:
+            raise serializers.ValidationError(
+                "Cannot delete activity under submitted service profile."
+            )
         if activity.exists():
             activity.delete()
         return validated_data
 
     def update(self, instance, validated_data):
+        if instance.service_profile.submitted:
+            raise serializers.ValidationError(
+                "Cannot update activity under submitted service profile."
+            )
         instance.title = validated_data.get("title")
         instance.supervisor = validated_data.get("supervisor")
         instance.grades = validated_data.get("grades")
@@ -60,6 +72,10 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context["request"].user
         leadership_profile = LeadershipProfile.objects.get(user=user)
+        if leadership_profile.submitted:
+            raise serializers.ValidationError(
+                "Cannot create activity under submitted leadership profile."
+            )
         activity = LeadershipActivity.objects.create(
             title=validated_data["title"],
             supervisor=validated_data["supervisor"],
@@ -71,11 +87,19 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
 
     def delete(self, validated_data):
         activity = LeadershipActivity.objects.filter(id=validated_data.get("pk"))
+        if activity.leadership_profile.submitted:
+            raise serializers.ValidationError(
+                "Cannot delete activity under submitted leadership profile."
+            )
         if activity.exists():
             activity.delete()
         return validated_data
 
     def update(self, instance, validated_data):
+        if instance.leadership_profile.submitted:
+            raise serializers.ValidationError(
+                "Cannot update activity under submitted leadership profile."
+            )
         instance.title = validated_data.get("title")
         instance.supervisor = validated_data.get("supervisor")
         instance.description = validated_data.get("description")
@@ -101,49 +125,17 @@ class GPARecordSerializer(serializers.ModelSerializer):
         model = GPARecord
         fields = ["id", "gpa", "semester", "year"]
 
-    def create(self, validated_data):
-        user = self.context["request"].user
-        personal_profile = PersonalProfile.objects.get(user=user)
-        gpa_record = GPARecord.objects.create(
-            personal_profile=personal_profile,
-            gpa=validated_data["gpa"],
-            year=validated_data["year"],
-            semester=validated_data["semester"],
-        )
-        return gpa_record
-
     def update(self, instance, validated_data):
+        if instance.personal_profile.submitted:
+            raise serializers.ValidationError(
+                "Cannot update gpa under submitted personal profile."
+            )
         instance.gpa = validated_data.get("gpa")
         instance.save()
         return instance
 
 
 # Profile Serializers
-class ServiceProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ServiceProfile
-        fields = ["id"]
-        read_only_fields = ["user"]
-
-    def create(self, validated_data):
-        user = CustomUser.objects.get(id=validated_data["user_id"])
-        profile = ServiceProfile.objects.create(
-            user=user,
-        )
-        return profile
-
-    def delete(self, validated_data):
-        profile = ServiceProfile.objects.get(id=validated_data.get("pk"))
-        if profile.exists():
-            profile.delete()
-        return validated_data
-
-    def update(self, instance, validated_data):
-        instance.recommendation_teacher = validated_data.get("recommendation_teacher")
-        instance.save()
-        return instance
-
-
 class ServiceProfileSerializer(serializers.ModelSerializer):
     service_activities = ServiceActivitySerializer(many=True)
     event_activities = EventActivitySerializer(many=True)
@@ -156,8 +148,9 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
             "service_activities",
             "event_activities",
             "total_hours",
+            "submitted",
         ]
-        read_only_fields = ["user"]
+        read_only_fields = ["id", "submitted"]
 
     def get_total_hours(self, obj):
         service_activity_hours = obj.service_activities.aggregate(
@@ -183,28 +176,6 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
 
 
 class LeadershipProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LeadershipProfile
-        fields = [
-            "id",
-        ]
-        read_only_fields = ["id"]
-
-    def create(self, validated_data):
-        user = CustomUser.objects.get(id=validated_data["user_id"])
-        profile = LeadershipProfile.objects.create(
-            user=user,
-        )
-        return profile
-
-    def delete(self, validated_data):
-        profile = LeadershipProfile.objects.get(id=validated_data.get("pk"))
-        if profile.exists():
-            profile.delete()
-        return validated_data
-
-
-class LeadershipProfileSerializer(serializers.ModelSerializer):
     leadership_activities = LeadershipActivitySerializer(many=True)
 
     class Meta:
@@ -212,8 +183,9 @@ class LeadershipProfileSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "leadership_activities",
+            "submitted",
         ]
-        read_only_fields = ["id"]
+        read_only_fields = ["id", "submitted"]
 
 
 class PersonalProfileSerializer(serializers.ModelSerializer):
@@ -221,9 +193,14 @@ class PersonalProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PersonalProfile
-        fields = ["id", "gpa_records", "character_issues", "notes"]
+        fields = ["id", "gpa_records", "character_issues", "notes", "submitted"]
+        read_only_fields = ["id", "submitted"]
 
     def update(self, instance, validated_data):
+        if instance.submitted:
+            raise serializers.ValidationError(
+                "Cannot update submitted personal profile."
+            )
         instance.character_issues = validated_data.get("character_issues")
         instance.notes = validated_data.get("notes")
         instance.save()

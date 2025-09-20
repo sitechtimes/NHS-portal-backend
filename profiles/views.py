@@ -86,28 +86,69 @@ class LeadershipActivityViewSet(
 class ServiceProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     - retrieve: GET /profiles/service_profiles/{pk}/  (retrieve service profile)
+    - submit: POST /profiles/service_profiles/{pk}/submit/  (submit service profile)
+    - unsubmit: POST /profiles/service_profiles/{pk}/unsubmit/  (unsubmit service profile)
     """
 
     queryset = ServiceProfile.objects.all()
     serializer_class = ServiceProfileSerializer
 
     def get_permissions(self):
-        if self.action == "retrieve":
+        if self.action in ("retrieve", "submit"):
             perms = [IsOwner | IsGuidance | IsAdmin]
+        elif self.action == "unsubmit":
+            perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
+
+    @action(detail=True, methods=["post"])
+    def submit(self, request, pk=None):
+        service_profile = self.get_object()
+        service_profile.submitted = True
+        service_profile.save()
+        serializer = ServiceProfileSerializer(service_profile)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["post"])
+    def unsubmit(self, request, pk=None):
+        service_profile = self.get_object()
+        service_profile.submitted = False
+        service_profile.save()
+        serializer = ServiceProfileSerializer(service_profile)
+        return Response(serializer.data)
 
 
 class LeadershipProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     - retrieve: GET /profiles/leadership_profiles/{pk}/  (retrieve leadership profile)
+    - submit: POST /profiles/leadership_profiles/{pk}/submit/  (submit leadership profile)
+    - unsubmit: POST /profiles/leadership_profiles/{pk}/unsubmit/  (unsubmit leadership profile)
     """
 
     queryset = LeadershipProfile.objects.all()
     serializer_class = LeadershipProfileSerializer
 
     def get_permissions(self):
-        perms = [IsOwner | IsGuidance | IsAdmin]
+        if self.action in ("retrieve", "submit"):
+            perms = [IsOwner | IsGuidance | IsAdmin]
+        elif self.action == "unsubmit":
+            perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
+
+    @action(detail=True, methods=["post"])
+    def submit(self, request, pk=None):
+        leadership_profile = self.get_object()
+        leadership_profile.submitted = True
+        leadership_profile.save()
+        serializer = LeadershipProfileSerializer(leadership_profile)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["post"])
+    def unsubmit(self, request, pk=None):
+        leadership_profile = self.get_object()
+        leadership_profile.submitted = False
+        leadership_profile.save()
+        serializer = LeadershipProfileSerializer(leadership_profile)
+        return Response(serializer.data)
 
 
 class PersonalProfileViewSet(
@@ -116,6 +157,8 @@ class PersonalProfileViewSet(
     """
     - retrieve: GET /profiles/personal_profiles/{pk}/  (retrieve personal profile)
     - partial_update: PATCH /profiles/personal_profiles/{pk}/  (partial update)
+    - submit: POST /profiles/personal_profiles/{pk}/submit/  (submit personal profile)
+    - unsubmit: POST /profiles/personal_profiles/{pk}/unsubmit/  (unsubmit personal profile)
     """
 
     queryset = PersonalProfile.objects.all()
@@ -124,9 +167,27 @@ class PersonalProfileViewSet(
     def get_permissions(self):
         if self.action == "partial_update":
             perms = [IsGuidance | IsAdmin]
-        elif self.action == "retrieve":
+        elif self.action in ("retrieve", "submit"):
             perms = [IsOwner | IsGuidance | IsAdmin]
+        elif self.action == "unsubmit":
+            perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
+
+    @action(detail=True, methods=["post"])
+    def submit(self, request, pk=None):
+        personal_profile = self.get_object()
+        personal_profile.submitted = True
+        personal_profile.save()
+        serializer = PersonalProfileSerializer(personal_profile)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["post"])
+    def unsubmit(self, request, pk=None):
+        personal_profile = self.get_object()
+        personal_profile.submitted = False
+        personal_profile.save()
+        serializer = PersonalProfileSerializer(personal_profile)
+        return Response(serializer.data)
 
 
 class GPARecordViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
