@@ -1,0 +1,2066 @@
+openapi: 3.0.3
+info:
+  title: NHS Portal API
+  version: 1.0.0
+  description: Comprehensive API documentation for NHS Portal Backend - Student Management
+    System
+paths:
+  /api/token/:
+    post:
+      operationId: token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /events/:
+    post:
+      operationId: events_create
+      description: '- create: POST /events/  (create event)'
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+  /guidance/announcements/:
+    get:
+      operationId: guidance_announcements_list
+      description: |-
+        - create: POST /guidance/announcements/  (create announcement)
+        - list: GET /guidance/announcements/     (list announcements)
+        - destroy: DELETE /guidance/announcements/{pk}/  (delete announcement)
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Announcement'
+          description: ''
+    post:
+      operationId: guidance_announcements_create
+      description: |-
+        - create: POST /guidance/announcements/  (create announcement)
+        - list: GET /guidance/announcements/     (list announcements)
+        - destroy: DELETE /guidance/announcements/{pk}/  (delete announcement)
+      tags:
+      - guidance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+  /guidance/announcements/{id}/:
+    delete:
+      operationId: guidance_announcements_destroy
+      description: |-
+        - create: POST /guidance/announcements/  (create announcement)
+        - list: GET /guidance/announcements/     (list announcements)
+        - destroy: DELETE /guidance/announcements/{pk}/  (delete announcement)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this announcement.
+        required: true
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /guidance/guidance-dashboard/{id}/:
+    get:
+      operationId: guidance_guidance_dashboard_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guidance'
+          description: ''
+  /guidance/question-instances/:
+    get:
+      operationId: guidance_question_instances_list
+      description: '- update: PATCH /guidance/question-instances/{pk}/     (update
+        question instance)'
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BiographicalQuestionInstance'
+          description: ''
+  /guidance/question-instances/{id}/:
+    put:
+      operationId: guidance_question_instances_update
+      description: '- update: PATCH /guidance/question-instances/{pk}/     (update
+        question instance)'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this biographical question
+          instance.
+        required: true
+      tags:
+      - guidance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BiographicalQuestionInstanceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BiographicalQuestionInstanceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BiographicalQuestionInstanceRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BiographicalQuestionInstance'
+          description: ''
+    patch:
+      operationId: guidance_question_instances_partial_update
+      description: '- update: PATCH /guidance/question-instances/{pk}/     (update
+        question instance)'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this biographical question
+          instance.
+        required: true
+      tags:
+      - guidance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBiographicalQuestionInstanceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBiographicalQuestionInstanceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBiographicalQuestionInstanceRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BiographicalQuestionInstance'
+          description: ''
+  /guidance/questions/:
+    get:
+      operationId: guidance_questions_list
+      description: |-
+        - create: POST /guidance/questions/  (create question)
+        - list: GET /guidance/questions/     (list questions)
+        - destroy: DELETE /guidance/questions/{pk}/  (delete question)
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BiographicalQuestion'
+          description: ''
+    post:
+      operationId: guidance_questions_create
+      description: |-
+        - create: POST /guidance/questions/  (create question)
+        - list: GET /guidance/questions/     (list questions)
+        - destroy: DELETE /guidance/questions/{pk}/  (delete question)
+      tags:
+      - guidance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BiographicalQuestionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BiographicalQuestionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BiographicalQuestionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BiographicalQuestion'
+          description: ''
+  /guidance/questions/{id}/:
+    delete:
+      operationId: guidance_questions_destroy
+      description: |-
+        - create: POST /guidance/questions/  (create question)
+        - list: GET /guidance/questions/     (list questions)
+        - destroy: DELETE /guidance/questions/{pk}/  (delete question)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this biographical question.
+        required: true
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /guidance/recommendations/:
+    get:
+      operationId: guidance_recommendations_list
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recommendation'
+          description: ''
+    post:
+      operationId: guidance_recommendations_create
+      tags:
+      - guidance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recommendation'
+          description: ''
+  /guidance/recommendations/{id}/:
+    get:
+      operationId: guidance_recommendations_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this recommendation.
+        required: true
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recommendation'
+          description: ''
+    put:
+      operationId: guidance_recommendations_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this recommendation.
+        required: true
+      tags:
+      - guidance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recommendation'
+          description: ''
+    patch:
+      operationId: guidance_recommendations_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this recommendation.
+        required: true
+      tags:
+      - guidance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRecommendationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRecommendationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRecommendationRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recommendation'
+          description: ''
+    delete:
+      operationId: guidance_recommendations_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this recommendation.
+        required: true
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /guidance/recommendations/{id}/approve/:
+    post:
+      operationId: guidance_recommendations_approve_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this recommendation.
+        required: true
+      tags:
+      - guidance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recommendation'
+          description: ''
+  /guidance/recommendations/{id}/deny/:
+    post:
+      operationId: guidance_recommendations_deny_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this recommendation.
+        required: true
+      tags:
+      - guidance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recommendation'
+          description: ''
+  /guidance/students/:
+    get:
+      operationId: guidance_students_list
+      description: |-
+        - retrieve: GET /guidance/users/{pk}/  (student detail)
+        - list: GET /guidance/users/           (all students)
+        - GET /guidance/users/{pk}/expanded/  (expanded student view)
+        - GET /guidance/users/multiple/?ids=[1,2]  (multiple students)
+        - GET /guidance/users/filter/?first_name=...  (filter)
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+  /guidance/students/{id}/:
+    get:
+      operationId: guidance_students_retrieve
+      description: |-
+        - retrieve: GET /guidance/users/{pk}/  (student detail)
+        - list: GET /guidance/users/           (all students)
+        - GET /guidance/users/{pk}/expanded/  (expanded student view)
+        - GET /guidance/users/multiple/?ids=[1,2]  (multiple students)
+        - GET /guidance/users/filter/?first_name=...  (filter)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /guidance/students/{id}/expanded/:
+    get:
+      operationId: guidance_students_expanded_retrieve
+      description: |-
+        - retrieve: GET /guidance/users/{pk}/  (student detail)
+        - list: GET /guidance/users/           (all students)
+        - GET /guidance/users/{pk}/expanded/  (expanded student view)
+        - GET /guidance/users/multiple/?ids=[1,2]  (multiple students)
+        - GET /guidance/users/filter/?first_name=...  (filter)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /guidance/students/filter/:
+    get:
+      operationId: guidance_students_filter_retrieve
+      description: |-
+        - retrieve: GET /guidance/users/{pk}/  (student detail)
+        - list: GET /guidance/users/           (all students)
+        - GET /guidance/users/{pk}/expanded/  (expanded student view)
+        - GET /guidance/users/multiple/?ids=[1,2]  (multiple students)
+        - GET /guidance/users/filter/?first_name=...  (filter)
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /guidance/students/multiple/:
+    get:
+      operationId: guidance_students_multiple_retrieve
+      description: |-
+        - retrieve: GET /guidance/users/{pk}/  (student detail)
+        - list: GET /guidance/users/           (all students)
+        - GET /guidance/users/{pk}/expanded/  (expanded student view)
+        - GET /guidance/users/multiple/?ids=[1,2]  (multiple students)
+        - GET /guidance/users/filter/?first_name=...  (filter)
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /guidance/teacher-dashboard/{id}/:
+    get:
+      operationId: guidance_teacher_dashboard_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - guidance
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+          description: ''
+  /profiles/event-activities/:
+    post:
+      operationId: profiles_event_activities_create
+      description: |-
+        Endpoint used by NFC backend to post event participation.
+        Only exposes create (POST) and validates EVENTS_API_KEY.
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventActivityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventActivityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventActivityRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventActivity'
+          description: ''
+  /profiles/gpa-records/{id}/:
+    put:
+      operationId: profiles_gpa_records_update
+      description: '- partial_update: PATCH /profiles/gpa_records/{pk}/  (partial
+        update)'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this gpa record.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GPARecordRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GPARecordRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GPARecordRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GPARecord'
+          description: ''
+    patch:
+      operationId: profiles_gpa_records_partial_update
+      description: '- partial_update: PATCH /profiles/gpa_records/{pk}/  (partial
+        update)'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this gpa record.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGPARecordRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedGPARecordRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedGPARecordRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GPARecord'
+          description: ''
+  /profiles/leadership-activities/:
+    post:
+      operationId: profiles_leadership_activities_create
+      description: |-
+        - create: POST /profiles/leadership_activities/  (create activity)
+        - partial_update: PATCH /profiles/leadership_activities/{pk}/  (partial update)
+        - destroy: DELETE /profiles/leadership_activities/{pk}/  (delete activity
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadershipActivityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LeadershipActivityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LeadershipActivityRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadershipActivity'
+          description: ''
+  /profiles/leadership-activities/{id}/:
+    put:
+      operationId: profiles_leadership_activities_update
+      description: |-
+        - create: POST /profiles/leadership_activities/  (create activity)
+        - partial_update: PATCH /profiles/leadership_activities/{pk}/  (partial update)
+        - destroy: DELETE /profiles/leadership_activities/{pk}/  (delete activity
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this leadership activity.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadershipActivityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LeadershipActivityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LeadershipActivityRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadershipActivity'
+          description: ''
+    patch:
+      operationId: profiles_leadership_activities_partial_update
+      description: |-
+        - create: POST /profiles/leadership_activities/  (create activity)
+        - partial_update: PATCH /profiles/leadership_activities/{pk}/  (partial update)
+        - destroy: DELETE /profiles/leadership_activities/{pk}/  (delete activity
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this leadership activity.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLeadershipActivityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLeadershipActivityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLeadershipActivityRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadershipActivity'
+          description: ''
+    delete:
+      operationId: profiles_leadership_activities_destroy
+      description: |-
+        - create: POST /profiles/leadership_activities/  (create activity)
+        - partial_update: PATCH /profiles/leadership_activities/{pk}/  (partial update)
+        - destroy: DELETE /profiles/leadership_activities/{pk}/  (delete activity
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this leadership activity.
+        required: true
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /profiles/leadership-profiles/{id}/:
+    get:
+      operationId: profiles_leadership_profiles_retrieve
+      description: |-
+        - retrieve: GET /profiles/leadership_profiles/{pk}/  (retrieve leadership profile)
+        - submit: POST /profiles/leadership_profiles/{pk}/submit/  (submit leadership profile)
+        - unsubmit: POST /profiles/leadership_profiles/{pk}/unsubmit/  (unsubmit leadership profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this leadership profile.
+        required: true
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadershipProfile'
+          description: ''
+  /profiles/leadership-profiles/{id}/submit/:
+    post:
+      operationId: profiles_leadership_profiles_submit_create
+      description: |-
+        - retrieve: GET /profiles/leadership_profiles/{pk}/  (retrieve leadership profile)
+        - submit: POST /profiles/leadership_profiles/{pk}/submit/  (submit leadership profile)
+        - unsubmit: POST /profiles/leadership_profiles/{pk}/unsubmit/  (unsubmit leadership profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this leadership profile.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadershipProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LeadershipProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LeadershipProfileRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadershipProfile'
+          description: ''
+  /profiles/leadership-profiles/{id}/unsubmit/:
+    post:
+      operationId: profiles_leadership_profiles_unsubmit_create
+      description: |-
+        - retrieve: GET /profiles/leadership_profiles/{pk}/  (retrieve leadership profile)
+        - submit: POST /profiles/leadership_profiles/{pk}/submit/  (submit leadership profile)
+        - unsubmit: POST /profiles/leadership_profiles/{pk}/unsubmit/  (unsubmit leadership profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this leadership profile.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadershipProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LeadershipProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LeadershipProfileRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadershipProfile'
+          description: ''
+  /profiles/personal-profiles/{id}/:
+    get:
+      operationId: profiles_personal_profiles_retrieve
+      description: |-
+        - retrieve: GET /profiles/personal_profiles/{pk}/  (retrieve personal profile)
+        - partial_update: PATCH /profiles/personal_profiles/{pk}/  (partial update)
+        - submit: POST /profiles/personal_profiles/{pk}/submit/  (submit personal profile)
+        - unsubmit: POST /profiles/personal_profiles/{pk}/unsubmit/  (unsubmit personal profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this personal profile.
+        required: true
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalProfile'
+          description: ''
+    put:
+      operationId: profiles_personal_profiles_update
+      description: |-
+        - retrieve: GET /profiles/personal_profiles/{pk}/  (retrieve personal profile)
+        - partial_update: PATCH /profiles/personal_profiles/{pk}/  (partial update)
+        - submit: POST /profiles/personal_profiles/{pk}/submit/  (submit personal profile)
+        - unsubmit: POST /profiles/personal_profiles/{pk}/unsubmit/  (unsubmit personal profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this personal profile.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PersonalProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PersonalProfileRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalProfile'
+          description: ''
+    patch:
+      operationId: profiles_personal_profiles_partial_update
+      description: |-
+        - retrieve: GET /profiles/personal_profiles/{pk}/  (retrieve personal profile)
+        - partial_update: PATCH /profiles/personal_profiles/{pk}/  (partial update)
+        - submit: POST /profiles/personal_profiles/{pk}/submit/  (submit personal profile)
+        - unsubmit: POST /profiles/personal_profiles/{pk}/unsubmit/  (unsubmit personal profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this personal profile.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonalProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonalProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonalProfileRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalProfile'
+          description: ''
+  /profiles/personal-profiles/{id}/submit/:
+    post:
+      operationId: profiles_personal_profiles_submit_create
+      description: |-
+        - retrieve: GET /profiles/personal_profiles/{pk}/  (retrieve personal profile)
+        - partial_update: PATCH /profiles/personal_profiles/{pk}/  (partial update)
+        - submit: POST /profiles/personal_profiles/{pk}/submit/  (submit personal profile)
+        - unsubmit: POST /profiles/personal_profiles/{pk}/unsubmit/  (unsubmit personal profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this personal profile.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PersonalProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PersonalProfileRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalProfile'
+          description: ''
+  /profiles/personal-profiles/{id}/unsubmit/:
+    post:
+      operationId: profiles_personal_profiles_unsubmit_create
+      description: |-
+        - retrieve: GET /profiles/personal_profiles/{pk}/  (retrieve personal profile)
+        - partial_update: PATCH /profiles/personal_profiles/{pk}/  (partial update)
+        - submit: POST /profiles/personal_profiles/{pk}/submit/  (submit personal profile)
+        - unsubmit: POST /profiles/personal_profiles/{pk}/unsubmit/  (unsubmit personal profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this personal profile.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PersonalProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PersonalProfileRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalProfile'
+          description: ''
+  /profiles/service-activities/:
+    post:
+      operationId: profiles_service_activities_create
+      description: |-
+        "
+        - create: POST /profiles/service_activities/  (create activity)
+        - partial_update: PATCH /profiles/service_activities/{pk}/  (partial update)
+        - destroy: DELETE /profiles/service_activities/{pk}/  (delete activity)
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceActivityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceActivityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceActivityRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceActivity'
+          description: ''
+  /profiles/service-activities/{id}/:
+    put:
+      operationId: profiles_service_activities_update
+      description: |-
+        "
+        - create: POST /profiles/service_activities/  (create activity)
+        - partial_update: PATCH /profiles/service_activities/{pk}/  (partial update)
+        - destroy: DELETE /profiles/service_activities/{pk}/  (delete activity)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this service activity.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceActivityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceActivityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceActivityRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceActivity'
+          description: ''
+    patch:
+      operationId: profiles_service_activities_partial_update
+      description: |-
+        "
+        - create: POST /profiles/service_activities/  (create activity)
+        - partial_update: PATCH /profiles/service_activities/{pk}/  (partial update)
+        - destroy: DELETE /profiles/service_activities/{pk}/  (delete activity)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this service activity.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceActivityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceActivityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceActivityRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceActivity'
+          description: ''
+    delete:
+      operationId: profiles_service_activities_destroy
+      description: |-
+        "
+        - create: POST /profiles/service_activities/  (create activity)
+        - partial_update: PATCH /profiles/service_activities/{pk}/  (partial update)
+        - destroy: DELETE /profiles/service_activities/{pk}/  (delete activity)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this service activity.
+        required: true
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /profiles/service-profiles/{id}/:
+    get:
+      operationId: profiles_service_profiles_retrieve
+      description: |-
+        - retrieve: GET /profiles/service_profiles/{pk}/  (retrieve service profile)
+        - submit: POST /profiles/service_profiles/{pk}/submit/  (submit service profile)
+        - unsubmit: POST /profiles/service_profiles/{pk}/unsubmit/  (unsubmit service profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this service profile.
+        required: true
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceProfile'
+          description: ''
+  /profiles/service-profiles/{id}/submit/:
+    post:
+      operationId: profiles_service_profiles_submit_create
+      description: |-
+        - retrieve: GET /profiles/service_profiles/{pk}/  (retrieve service profile)
+        - submit: POST /profiles/service_profiles/{pk}/submit/  (submit service profile)
+        - unsubmit: POST /profiles/service_profiles/{pk}/unsubmit/  (unsubmit service profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this service profile.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceProfileRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceProfile'
+          description: ''
+  /profiles/service-profiles/{id}/unsubmit/:
+    post:
+      operationId: profiles_service_profiles_unsubmit_create
+      description: |-
+        - retrieve: GET /profiles/service_profiles/{pk}/  (retrieve service profile)
+        - submit: POST /profiles/service_profiles/{pk}/submit/  (submit service profile)
+        - unsubmit: POST /profiles/service_profiles/{pk}/unsubmit/  (unsubmit service profile)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this service profile.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceProfileRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceProfile'
+          description: ''
+components:
+  schemas:
+    Announcement:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        recipient_emails: {}
+        title:
+          type: string
+          maxLength: 200
+        message:
+          type: string
+        send_immediately:
+          type: boolean
+      required:
+      - id
+      - message
+      - title
+    AnnouncementRequest:
+      type: object
+      properties:
+        recipient_emails: {}
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        message:
+          type: string
+          minLength: 1
+        send_immediately:
+          type: boolean
+      required:
+      - message
+      - title
+    AnswerTypeEnum:
+      enum:
+      - text
+      - dropdown
+      - number
+      type: string
+      description: |-
+        * `text` - text
+        * `dropdown` - dropdown
+        * `number` - number
+    BiographicalQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question_text:
+          type: string
+        answer_type:
+          $ref: '#/components/schemas/AnswerTypeEnum'
+        options:
+          nullable: true
+          description: Required if answer_type is 'dropdown' or 'checkbox'
+      required:
+      - answer_type
+      - id
+      - question_text
+    BiographicalQuestionInstance:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        question:
+          $ref: '#/components/schemas/BiographicalQuestion'
+        answer:
+          type: string
+      required:
+      - answer
+      - id
+      - question
+      - user
+    BiographicalQuestionInstanceRequest:
+      type: object
+      properties:
+        user:
+          type: integer
+        question:
+          $ref: '#/components/schemas/BiographicalQuestionRequest'
+        answer:
+          type: string
+          minLength: 1
+      required:
+      - answer
+      - question
+      - user
+    BiographicalQuestionRequest:
+      type: object
+      properties:
+        question_text:
+          type: string
+          minLength: 1
+        answer_type:
+          $ref: '#/components/schemas/AnswerTypeEnum'
+        options:
+          nullable: true
+          description: Required if answer_type is 'dropdown' or 'checkbox'
+      required:
+      - answer_type
+      - question_text
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        time_start:
+          type: string
+          format: date-time
+        time_end:
+          type: string
+          format: date-time
+      required:
+      - description
+      - id
+      - name
+      - time_end
+      - time_start
+    EventActivity:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        service_event:
+          $ref: '#/components/schemas/Event'
+      required:
+      - id
+      - service_event
+    EventActivityRequest:
+      type: object
+      properties:
+        service_event:
+          $ref: '#/components/schemas/EventRequest'
+      required:
+      - service_event
+    EventRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 1
+        time_start:
+          type: string
+          format: date-time
+        time_end:
+          type: string
+          format: date-time
+      required:
+      - description
+      - name
+      - time_end
+      - time_start
+    GPARecord:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        gpa:
+          type: number
+          format: double
+        semester:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+      required:
+      - gpa
+      - id
+      - semester
+      - year
+    GPARecordRequest:
+      type: object
+      properties:
+        gpa:
+          type: number
+          format: double
+        semester:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+      required:
+      - gpa
+      - semester
+      - year
+    Guidance:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        user_type:
+          allOf:
+          - $ref: '#/components/schemas/UserTypeEnum'
+          minimum: 0
+          maximum: 9223372036854775807
+      required:
+      - email
+      - first_name
+      - id
+      - last_name
+      - user_type
+    LeadershipActivity:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          nullable: true
+        supervisor:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        image:
+          type: string
+          format: uri
+      required:
+      - id
+      - image
+    LeadershipActivityRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        supervisor:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        image:
+          type: string
+          format: binary
+      required:
+      - image
+    LeadershipProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        leadership_activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LeadershipActivity'
+        submitted:
+          type: boolean
+          readOnly: true
+      required:
+      - id
+      - leadership_activities
+      - submitted
+    LeadershipProfileRequest:
+      type: object
+      properties:
+        leadership_activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LeadershipActivityRequest'
+      required:
+      - leadership_activities
+    PatchedBiographicalQuestionInstanceRequest:
+      type: object
+      properties:
+        user:
+          type: integer
+        question:
+          $ref: '#/components/schemas/BiographicalQuestionRequest'
+        answer:
+          type: string
+          minLength: 1
+    PatchedGPARecordRequest:
+      type: object
+      properties:
+        gpa:
+          type: number
+          format: double
+        semester:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+    PatchedLeadershipActivityRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        supervisor:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        image:
+          type: string
+          format: binary
+    PatchedPersonalProfileRequest:
+      type: object
+      properties:
+        character_issues:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+    PatchedRecommendationRequest:
+      type: object
+      properties:
+        recommendation_type:
+          $ref: '#/components/schemas/RecommendationTypeEnum'
+        teacher_email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+    PatchedServiceActivityRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        supervisor:
+          type: string
+          nullable: true
+        grades:
+          nullable: true
+        hours:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        image:
+          type: string
+          format: binary
+    PersonalProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        gpa_records:
+          type: array
+          items:
+            $ref: '#/components/schemas/GPARecord'
+          readOnly: true
+        character_issues:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+        submitted:
+          type: boolean
+          readOnly: true
+      required:
+      - gpa_records
+      - id
+      - submitted
+    PersonalProfileRequest:
+      type: object
+      properties:
+        character_issues:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+    Recommendation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        recommendation_type:
+          $ref: '#/components/schemas/RecommendationTypeEnum'
+        teacher_email:
+          type: string
+          format: email
+          maxLength: 254
+        submitted_at:
+          type: string
+          format: date-time
+          readOnly: true
+        approved:
+          type: boolean
+          readOnly: true
+          nullable: true
+      required:
+      - approved
+      - id
+      - recommendation_type
+      - submitted_at
+      - teacher_email
+    RecommendationRequest:
+      type: object
+      properties:
+        recommendation_type:
+          $ref: '#/components/schemas/RecommendationTypeEnum'
+        teacher_email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+      required:
+      - recommendation_type
+      - teacher_email
+    RecommendationTypeEnum:
+      enum:
+      - service
+      - leadership
+      - character
+      - scholarship
+      type: string
+      description: |-
+        * `service` - service
+        * `leadership` - leadership
+        * `character` - character
+        * `scholarship` - scholarship
+    ServiceActivity:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          nullable: true
+        supervisor:
+          type: string
+          nullable: true
+        grades:
+          nullable: true
+        hours:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        image:
+          type: string
+          format: uri
+      required:
+      - id
+      - image
+    ServiceActivityRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        supervisor:
+          type: string
+          nullable: true
+        grades:
+          nullable: true
+        hours:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        image:
+          type: string
+          format: binary
+      required:
+      - image
+    ServiceProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        service_activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceActivity'
+        event_activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActivity'
+        total_hours:
+          type: string
+          readOnly: true
+        submitted:
+          type: boolean
+          readOnly: true
+      required:
+      - event_activities
+      - id
+      - service_activities
+      - submitted
+      - total_hours
+    ServiceProfileRequest:
+      type: object
+      properties:
+        service_activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceActivityRequest'
+        event_activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActivityRequest'
+      required:
+      - event_activities
+      - service_activities
+    Teacher:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        user_type:
+          allOf:
+          - $ref: '#/components/schemas/UserTypeEnum'
+          minimum: 0
+          maximum: 9223372036854775807
+        recommendation_requests:
+          type: string
+          readOnly: true
+      required:
+      - email
+      - first_name
+      - id
+      - last_name
+      - recommendation_requests
+      - user_type
+    TokenObtainPair:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - refresh
+    TokenObtainPairRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - email
+      - password
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - refresh
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+        last_name:
+          type: string
+        official_class:
+          type: string
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        user_type:
+          allOf:
+          - $ref: '#/components/schemas/UserTypeEnum'
+          minimum: 0
+          maximum: 9223372036854775807
+      required:
+      - email
+      - first_name
+      - id
+      - last_name
+      - official_class
+      - user_type
+    UserTypeEnum:
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      type: integer
+      description: |-
+        * `0` - Student
+        * `1` - Teacher
+        * `2` - Guidance
+        * `3` - Admin
+        * `4` - Superuser
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

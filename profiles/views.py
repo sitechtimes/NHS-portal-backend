@@ -171,6 +171,8 @@ class PersonalProfileViewSet(
             perms = [IsOwner | IsGuidance | IsAdmin]
         elif self.action == "unsubmit":
             perms = [IsGuidance | IsAdmin]
+        else:
+            perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
 
     @action(detail=True, methods=["post"])
@@ -201,6 +203,8 @@ class GPARecordViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     def get_permissions(self):
         if self.action == "partial_update":
             perms = [OwnsPersonalProfileOfObject | IsGuidance | IsAdmin]
+        else:
+            perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
 
 
