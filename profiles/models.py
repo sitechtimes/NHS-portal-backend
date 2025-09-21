@@ -1,7 +1,7 @@
 from django.db import models
 from users.models import CustomUser
 from events.models import ServiceEvent
-from django.db.models import Sum
+from django.db.models import Sum, Value
 from django.db.models.functions import Coalesce
 
 
@@ -10,11 +10,12 @@ class ServiceProfile(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="service_profile"
     )
     submitted = models.BooleanField(default=False)
+    approved = models.BooleanField(default=False)
 
     @property
     def total_hours(self):
         service_activity_hours = self.service_activities.aggregate(
-            total_hours=Sum("hours")
+            total_hours=Coalesce(Sum("hours"), Value(0))
         ).get("total_hours", 0)
         event_activity_hours = 0
         for event_activity in self.event_activities.all():
@@ -30,6 +31,7 @@ class LeadershipProfile(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="leadership_profile"
     )
     submitted = models.BooleanField(default=False)
+    approved = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -42,12 +44,15 @@ class PersonalProfile(models.Model):
     character_issues = models.BooleanField(default=False)
     notes = models.TextField(null=True, blank=True)
     submitted = models.BooleanField(default=False)
+    approved = models.BooleanField(default=False)
 
     @property
     def average_gpa(self):
         gpa_records = self.gpa_records.exclude(gpa=0.0)
-        total = gpa_records.aggregate(total=Coalesce(Sum("gpa"), 0.0)).get("total")
         count = gpa_records.count()
+        if count == 0:
+            return 0
+        total = gpa_records.aggregate(total=Coalesce(Sum("gpa"), 0.0)).get("total")
         return round(total / count, 2)
 
     def __str__(self):

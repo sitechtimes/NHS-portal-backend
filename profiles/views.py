@@ -78,7 +78,9 @@ class ServiceProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     def get_permissions(self):
         if self.action in ("retrieve", "submit"):
             perms = [IsOwner | IsGuidance | IsAdmin]
-        elif self.action == "unsubmit":
+        elif self.action in ("unsubmit", "approve"):
+            perms = [IsGuidance | IsAdmin]
+        else:
             perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
 
@@ -98,6 +100,21 @@ class ServiceProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         serializer = ServiceProfileSerializer(service_profile)
         return Response(serializer.data)
 
+    @action(detail=True, methods=["post"])
+    def approve(self, request, pk=None):
+        service_profile = self.get_object()
+        if service_profile.submitted is False:
+            return Response(
+                {
+                    "error": "Cannot approve a service profile that has not been submitted."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        service_profile.approved = True
+        service_profile.save()
+        serializer = ServiceProfileSerializer(service_profile)
+        return Response(serializer.data)
+
 
 class LeadershipProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = LeadershipProfile.objects.all()
@@ -106,7 +123,9 @@ class LeadershipProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSe
     def get_permissions(self):
         if self.action in ("retrieve", "submit"):
             perms = [IsOwner | IsGuidance | IsAdmin]
-        elif self.action == "unsubmit":
+        elif self.action in ("unsubmit", "approve"):
+            perms = [IsGuidance | IsAdmin]
+        else:
             perms = [IsGuidance | IsAdmin]
         return [p() for p in perms]
 
@@ -126,6 +145,21 @@ class LeadershipProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSe
         serializer = LeadershipProfileSerializer(leadership_profile)
         return Response(serializer.data)
 
+    @action(detail=True, methods=["post"])
+    def approve(self, request, pk=None):
+        leadership_profile = self.get_object()
+        if leadership_profile.submitted == False:
+            return Response(
+                {
+                    "error": "Cannot approve a leadership profile that has not been submitted."
+                },
+                status=HTTP_400_BAD_REQUEST,
+            )
+        leadership_profile.approved = True
+        leadership_profile.save()
+        serializer = LeadershipProfileSerializer(leadership_profile)
+        return Response(serializer.data)
+
 
 class PersonalProfileViewSet(
     mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
@@ -138,7 +172,7 @@ class PersonalProfileViewSet(
             perms = [IsGuidance | IsAdmin]
         elif self.action in ("retrieve", "submit"):
             perms = [IsOwner | IsGuidance | IsAdmin]
-        elif self.action == "unsubmit":
+        elif self.action in ("unsubmit", "approve"):
             perms = [IsGuidance | IsAdmin]
         else:
             perms = [IsGuidance | IsAdmin]
@@ -156,6 +190,21 @@ class PersonalProfileViewSet(
     def unsubmit(self, request, pk=None):
         personal_profile = self.get_object()
         personal_profile.submitted = False
+        personal_profile.save()
+        serializer = PersonalProfileSerializer(personal_profile)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["post"])
+    def approve(self, request, pk=None):
+        personal_profile = self.get_object()
+        if personal_profile.submitted == False:
+            return Response(
+                {
+                    "error": "Cannot approve a personal profile that has not been submitted."
+                },
+                status=HTTP_400_BAD_REQUEST,
+            )
+        personal_profile.approved = True
         personal_profile.save()
         serializer = PersonalProfileSerializer(personal_profile)
         return Response(serializer.data)
