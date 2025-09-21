@@ -158,8 +158,9 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
             "event_activities",
             "total_hours",
             "submitted",
+            "approved",
         ]
-        read_only_fields = ["id", "submitted", "total_hours"]
+        read_only_fields = ["id", "submitted", "approved", "total_hours"]
 
     def get_total_hours(self, obj):
         return obj.total_hours
@@ -170,12 +171,8 @@ class LeadershipProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LeadershipProfile
-        fields = [
-            "id",
-            "leadership_activities",
-            "submitted",
-        ]
-        read_only_fields = ["id", "submitted"]
+        fields = ["id", "leadership_activities", "submitted", "approved"]
+        read_only_fields = ["id", "submitted", "approved"]
 
 
 class PersonalProfileSerializer(serializers.ModelSerializer):
@@ -191,8 +188,9 @@ class PersonalProfileSerializer(serializers.ModelSerializer):
             "character_issues",
             "notes",
             "submitted",
+            "approved",
         ]
-        read_only_fields = ["id", "submitted", "average_gpa"]
+        read_only_fields = ["id", "submitted", "approved", "average_gpa"]
 
     def get_average_gpa(self, obj):
         return obj.average_gpa
