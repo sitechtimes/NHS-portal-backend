@@ -9,9 +9,6 @@ from profiles.models import (
     GPARecord,
     EventActivity,
 )
-from users.models import CustomUser
-from django.db.models import Sum, F, ExpressionWrapper, DurationField
-from django.db.models.functions import Coalesce
 
 
 # Activity/Event Serializers
@@ -110,13 +107,18 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
 
 class EventActivitySerializer(serializers.ModelSerializer):
     service_event = EventSerializer()
+    hours = serializers.SerializerMethodField()
 
     class Meta:
         model = EventActivity
         fields = [
             "id",
             "service_event",
+            "hours",
         ]
+
+    def get_hours(self, obj):
+        return obj.hours
 
 
 # GPA Serializer
@@ -150,29 +152,10 @@ class ServiceProfileSerializer(serializers.ModelSerializer):
             "total_hours",
             "submitted",
         ]
-        read_only_fields = ["id", "submitted"]
+        read_only_fields = ["id", "submitted", "total_hours"]
 
     def get_total_hours(self, obj):
-        service_activity_hours = obj.service_activities.aggregate(
-            total_hours=Coalesce(Sum("hours"), 0)
-        ).get("total_hours", 0)
-
-        event_activity_durations = (
-            obj.event_activities.annotate(
-                duration=ExpressionWrapper(
-                    F("service_event__time_end") - F("service_event__time_start"),
-                    output_field=DurationField(),
-                )
-            )
-            .aggregate(total_duration=Coalesce(Sum("duration"), None))
-            .get("total_duration")
-        )
-
-        event_activity_hours = 0
-        if event_activity_durations:
-            event_activity_hours = event_activity_durations.total_seconds() / 3600
-
-        return service_activity_hours + event_activity_hours
+        return obj.total_hours
 
 
 class LeadershipProfileSerializer(serializers.ModelSerializer):
@@ -190,11 +173,22 @@ class LeadershipProfileSerializer(serializers.ModelSerializer):
 
 class PersonalProfileSerializer(serializers.ModelSerializer):
     gpa_records = GPARecordSerializer(many=True, read_only=True)
+    average_gpa = serializers.SerializerMethodField()
 
     class Meta:
         model = PersonalProfile
-        fields = ["id", "gpa_records", "character_issues", "notes", "submitted"]
-        read_only_fields = ["id", "submitted"]
+        fields = [
+            "id",
+            "gpa_records",
+            "average_gpa",
+            "character_issues",
+            "notes",
+            "submitted",
+        ]
+        read_only_fields = ["id", "submitted", "average_gpa"]
+
+    def get_average_gpa(self, obj):
+        return obj.average_gpa
 
     def update(self, instance, validated_data):
         if instance.submitted:

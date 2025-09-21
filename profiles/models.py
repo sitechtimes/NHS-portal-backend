@@ -1,7 +1,8 @@
-from re import sub
 from django.db import models
 from users.models import CustomUser
 from events.models import ServiceEvent
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 
 
 class ServiceProfile(models.Model):
@@ -9,6 +10,16 @@ class ServiceProfile(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="service_profile"
     )
     submitted = models.BooleanField(default=False)
+
+    @property
+    def total_hours(self):
+        service_activity_hours = self.service_activities.aggregate(
+            total_hours=Sum("hours")
+        ).get("total_hours", 0)
+        event_activity_hours = 0
+        for event_activity in self.event_activities.all():
+            event_activity_hours += event_activity.hours
+        return service_activity_hours + event_activity_hours
 
     def __str__(self):
         return self.name
@@ -31,6 +42,13 @@ class PersonalProfile(models.Model):
     character_issues = models.BooleanField(default=False)
     notes = models.TextField(null=True, blank=True)
     submitted = models.BooleanField(default=False)
+
+    @property
+    def average_gpa(self):
+        gpa_records = self.gpa_records.exclude(gpa=0.0)
+        total = gpa_records.aggregate(total=Coalesce(Sum("gpa"), 0.0)).get("total")
+        count = gpa_records.count()
+        return round(total / count, 2)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} - Personal Profile"
@@ -57,6 +75,14 @@ class EventActivity(models.Model):
     service_profile = models.ForeignKey(
         ServiceProfile, on_delete=models.CASCADE, related_name="event_activities"
     )
+
+    @property
+    def hours(self):
+        seconds = (
+            self.service_event.time_end - self.service_event.time_start
+        ).total_seconds()
+        hours = seconds / 3600
+        return hours
 
 
 class LeadershipActivity(models.Model):

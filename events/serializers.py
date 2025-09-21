@@ -13,6 +13,7 @@ class EventSerializer(serializers.ModelSerializer):
             "description",
             "time_start",
             "time_end",
+            "is_active",
         ]
 
     def create(self, validated_data):
@@ -36,14 +37,3 @@ class EventSerializer(serializers.ModelSerializer):
                 nfc_id=created_event["id"],
             )
         return service_event
-
-
-class EventActivitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EventActivity
-        fields = [
-            "id",
-            "event",
-            "service_profile",
-        ]
-        read_only_fields = ["user"]

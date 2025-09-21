@@ -188,7 +188,6 @@ class EventActivityViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
             return Response(
                 {"error": "Invalid API key"}, status=status.HTTP_403_FORBIDDEN
             )
-
         email = request.data.get("email")
         nfc_id = request.data.get("nfc_id")
         if not email or not nfc_id:
@@ -196,21 +195,23 @@ class EventActivityViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
                 {"error": "Missing 'email' or 'nfc_id' in request body."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
         try:
             service_profile = ServiceProfile.objects.get(user__email=email)
         except ServiceProfile.DoesNotExist:
             return Response(
                 {"error": "ServiceProfile not found for provided email."}, status=404
             )
-
         try:
             service_event = ServiceEvent.objects.get(nfc_id=nfc_id)
         except ServiceEvent.DoesNotExist:
             return Response(
                 {"error": "ServiceEvent not found for provided nfc_id."}, status=404
             )
-
+        if service_event.is_active == False:
+            return Response(
+                {"error": "ServiceEvent is not active."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         event_activity = EventActivity.objects.create(
             service_event=service_event,
             service_profile=service_profile,
