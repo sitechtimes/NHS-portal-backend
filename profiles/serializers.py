@@ -21,7 +21,11 @@ class ServiceActivitySerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
-        service_profile = ServiceProfile.objects.get(user=user)
+        try:
+            service_profile = ServiceProfile.objects.get(user=user)
+        except ServiceProfile.DoesNotExist:
+            raise serializers.ValidationError("ServiceProfile not found for user.")
+
         if service_profile.submitted:
             raise serializers.ValidationError(
                 "Cannot create activity under submitted service profile."
@@ -68,7 +72,10 @@ class LeadershipActivitySerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
-        leadership_profile = LeadershipProfile.objects.get(user=user)
+        try:
+            leadership_profile = LeadershipProfile.objects.get(user=user)
+        except LeadershipProfile.DoesNotExist:
+            raise serializers.ValidationError("LeadershipProfile not found for user.")
         if leadership_profile.submitted:
             raise serializers.ValidationError(
                 "Cannot create activity under submitted leadership profile."
