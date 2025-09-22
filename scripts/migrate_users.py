@@ -65,9 +65,18 @@ def run(*args):
             )
     users_to_create.append(
         CustomUser(
-            email="teacher@gmail.com",
+            email="teacher1@gmail.com",
             first_name="Sam",
             last_name="Kipnis",
+            user_type=1,
+            password=hashed_password,
+        )
+    )
+    users_to_create.append(
+        CustomUser(
+            email="teacher2@gmail.com",
+            first_name="Sam2",
+            last_name="Kipnis2",
             user_type=1,
             password=hashed_password,
         )

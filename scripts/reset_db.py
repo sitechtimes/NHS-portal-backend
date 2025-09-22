@@ -2,8 +2,8 @@ from .utils import run_django_command
 
 
 def run():
-    sure = input("Are you sure you want to reset the database? (y/n) ").lower()
-    if sure == "y":
+    reset = input("Are you sure you want to reset the database? (y/n) ").lower()
+    if reset == "y":
         script_commands = [
             "runscript purge_db",
             "runscript init_db",

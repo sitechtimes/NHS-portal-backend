@@ -7,7 +7,9 @@ from .views import (
     BiographicalQuestionInstanceViewSet,
     RecommendationViewSet,
     TeacherDashboardView,
+    TeacherRecommendationRequestsView,
     GuidanceDashboardView,
+    GuidanceSubmittedProfilesView,
 )
 
 router = DefaultRouter()
@@ -33,7 +35,16 @@ urlpatterns = [
         name="teacher-dashboard",
     ),
     path(
+        "teacher-recommendation-requests/",
+        TeacherRecommendationRequestsView.as_view(),
+        name="teacher-recommendation-requests",
+    ),
+    path(
         "guidance-dashboard/<int:pk>/",
         GuidanceDashboardView.as_view(),
+    ),
+    path(
+        "guidance-submitted-profiles/",
+        GuidanceSubmittedProfilesView.as_view(),
     ),
 ]

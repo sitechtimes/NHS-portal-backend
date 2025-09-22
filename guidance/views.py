@@ -16,12 +16,18 @@ from .models import (
     BiographicalQuestionInstance,
     Recommendation,
 )
+from profiles.models import ServiceProfile, LeadershipProfile, PersonalProfile
 from .serializers import (
     AnnouncementSerializer,
     BiographicalQuestionSerializer,
     BiographicalQuestionInstanceSerializer,
     GuidanceSerializer,
     RecommendationSerializer,
+)
+from profiles.serializers import (
+    ServiceProfileSerializer,
+    LeadershipProfileSerializer,
+    PersonalProfileSerializer,
 )
 from backend.permissions import (
     IsTeacher,
@@ -30,7 +36,8 @@ from backend.permissions import (
     IsSelf,
     OwnsQuestionInstance,
 )
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView, ListAPIView
+from django.db.models import Q
 
 
 class StudentViewSet(
@@ -127,7 +134,7 @@ class BiographicalQuestionInstanceViewSet(
 
 
 class RecommendationViewSet(viewsets.ModelViewSet):
-    queryset = Recommendation.objects.all().order_by("-submitted_at")
+    queryset = Recommendation.objects.all()
     serializer_class = RecommendationSerializer
 
     def get_permissions(self):
@@ -141,14 +148,25 @@ class RecommendationViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        rtype = request.data.get("recommendation_type")
-        if Recommendation.objects.filter(
-            user=user, recommendation_type=rtype, approved__in=[True, None]
-        ).exists():
+        recommendation_type = request.data.get("recommendation_type")
+        email = request.data.get("teacher_email")
+        if not CustomUser.objects.filter(email=email, user_type="1").exists():
             return Response(
-                {"detail": "A request of this type is already pending or approved."},
+                {"error": "No teacher found for provided email."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        if Recommendation.objects.filter(
+            Q(user=user)
+            & Q(recommendation_type=recommendation_type)
+            & (Q(approved=False) | Q(approved__isnull=True))
+        ).exists():
+            return Response(
+                {
+                    "error": "You already have a pending recommendation request of this type."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         return super().create(request, *args, **kwargs)
 
     @action(detail=True, methods=["post"])
@@ -172,7 +190,30 @@ class TeacherDashboardView(RetrieveAPIView):
     permission_classes = [IsSelf]
 
 
+class TeacherRecommendationRequestsView(ListAPIView):
+    serializer_class = RecommendationSerializer
+
+    def get_queryset(self):
+        return Recommendation.objects.filter(
+            (Q(approved=False) | Q(approved__isnull=True))
+            & Q(teacher_email=self.request.user.email)
+        )
+
+
 class GuidanceDashboardView(RetrieveAPIView):
     queryset = CustomUser.objects.filter(user_type="2")
     serializer_class = GuidanceSerializer
     permission_classes = [IsSelf]
+
+
+class GuidanceSubmittedProfilesView(ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsGuidance | IsAdmin]
+
+    def get_queryset(self):
+        return CustomUser.objects.filter(
+            Q(user_type="0")
+            & Q(service_profile__submitted=True)
+            & Q(leadership_profile__submitted=True)
+            & Q(personal_profile__submitted=True)
+        )

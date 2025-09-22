@@ -5,6 +5,11 @@ from .models import (
     BiographicalQuestionInstance,
     Recommendation,
 )
+from profiles.models import (
+    ServiceProfile,
+    LeadershipProfile,
+    PersonalProfile,
+)
 from users.models import CustomUser
 import json
 from rest_framework.response import Response
@@ -151,14 +156,6 @@ class RecommendationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get("request")
-        if Recommendation.objects.filter(
-            Q(user=request.user)
-            & Q(recommendation_type=validated_data["recommendation_type"])
-            & (Q(approved=False) | Q(approved__isnull=True))
-        ).exists():
-            raise serializers.ValidationError(
-                "You have an active recommendation request for this type."
-            )
         recommendation = Recommendation.objects.create(
             user=request.user,
             recommendation_type=validated_data["recommendation_type"],
@@ -210,7 +207,7 @@ class ExpandedUserSerializer(serializers.ModelSerializer):
 
 
 class TeacherSerializer(serializers.ModelSerializer):
-    recommendation_requests = serializers.SerializerMethodField()
+    recommendation_requests_exist = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -220,17 +217,18 @@ class TeacherSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "user_type",
-            "recommendation_requests",
+            "recommendation_requests_exist",
         ]
 
-    def get_recommendation_requests(self, obj):
-        requests = Recommendation.objects.filter(
-            Q(teacher_email=obj.email) & (Q(approved=True) | Q(approved__isnull=True))
-        )
-        return ExpandedRecommendationSerializer(requests, many=True).data
+    def get_recommendation_requests_exist(self, obj):
+        return Recommendation.objects.filter(
+            Q(teacher_email=obj.email) & (Q(approved=False) | Q(approved__isnull=True))
+        ).exists()
 
 
 class GuidanceSerializer(serializers.ModelSerializer):
+    submitted_profiles_exist = serializers.SerializerMethodField()
+
     class Meta:
         model = CustomUser
         fields = [
@@ -239,4 +237,12 @@ class GuidanceSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "user_type",
+            "submitted_profiles_exist",
         ]
+
+    def get_submitted_profiles_exist(self, obj):
+        return (
+            ServiceProfile.objects.filter(submitted=True).exists()
+            | LeadershipProfile.objects.filter(submitted=True).exists()
+            | PersonalProfile.objects.filter(submitted=True).exists()
+        )
