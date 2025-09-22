@@ -225,11 +225,7 @@ class GPARecordViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
 class EventActivityViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = EventActivity.objects.all()
     serializer_class = EventActivitySerializer
-
-    def get_permissions(self):
-        # allow the external service to POST (auth via api_key)
-        if self.action == "create":
-            return [AllowAny()]
+    permission_class = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         api_key = request.data.get("api_key")
@@ -247,15 +243,11 @@ class EventActivityViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         try:
             service_profile = ServiceProfile.objects.get(user__email=email)
         except ServiceProfile.DoesNotExist:
-            return Response(
-                {"error": "ServiceProfile not found for provided email."}, status=404
-            )
+            return Response({"error": "service_profile_not_found."}, status=404)
         try:
             service_event = ServiceEvent.objects.get(nfc_id=nfc_id)
         except ServiceEvent.DoesNotExist:
-            return Response(
-                {"error": "ServiceEvent not found for provided nfc_id."}, status=404
-            )
+            return Response({"error": "service_event_not_found."}, status=404)
         if service_event.is_active == False:
             return Response(
                 {"error": "ServiceEvent is not active."},
