@@ -98,6 +98,18 @@ class BiographicalQuestionSerializer(serializers.ModelSerializer):
                 question_text=validated_data["question_text"],
                 answer_type=validated_data["answer_type"],
             )
+        students = CustomUser.objects.filter(user_type="0")
+        biographical_question_instances = [
+            BiographicalQuestionInstance(
+                user=student,
+                question=question,
+            )
+            for student in students
+        ]
+        BiographicalQuestionInstance.objects.bulk_create(
+            biographical_question_instances
+        )
+
         return question
 
     def update(self, instance, validated_data):

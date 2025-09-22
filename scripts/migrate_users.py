@@ -1,8 +1,13 @@
 import os
 import csv
-import sys
 from django.db import transaction
 from users.models import CustomUser
+from profiles.models import (
+    ServiceProfile,
+    LeadershipProfile,
+    PersonalProfile,
+    GPARecord,
+)
 from django.contrib.auth.hashers import make_password
 from tqdm import tqdm
 
@@ -14,7 +19,7 @@ def run(*args):
     csv_path = os.path.abspath(os.path.join(BASE_DIR, "./data/students.csv"))
 
     seen_emails = set()
-    users_to_create = []
+    students_to_create = []
     skipped = 0
 
     existing_emails = set(CustomUser.objects.values_list("email", flat=True))
@@ -29,14 +34,20 @@ def run(*args):
             if not use_fake_passwords
             else reader
         )
-
+        classes = []
         for row in rows_iter:
             email = row.get("Student DOE Email", "").strip().lower()
             first_name = row.get("FirstName", "").strip()
             last_name = row.get("LastName", "").strip()
             official_class = row.get("OfficialClass", "").strip()
 
-            if not email or not first_name or not last_name:
+            if (
+                not email
+                or not first_name
+                or not last_name
+                or not official_class
+                or official_class == ""
+            ):
                 skipped += 1
                 continue
 
@@ -53,7 +64,7 @@ def run(*args):
             else:
                 hashed_password = make_password(raw_password)
 
-            users_to_create.append(
+            students_to_create.append(
                 CustomUser(
                     email=email,
                     first_name=first_name,
@@ -63,7 +74,8 @@ def run(*args):
                     password=hashed_password,
                 )
             )
-    users_to_create.append(
+    others_to_create = []
+    others_to_create.append(
         CustomUser(
             email="teacher1@gmail.com",
             first_name="Sam",
@@ -72,7 +84,7 @@ def run(*args):
             password=hashed_password,
         )
     )
-    users_to_create.append(
+    others_to_create.append(
         CustomUser(
             email="teacher2@gmail.com",
             first_name="Sam2",
@@ -81,7 +93,7 @@ def run(*args):
             password=hashed_password,
         )
     )
-    users_to_create.append(
+    others_to_create.append(
         CustomUser(
             email="guidance@gmail.com",
             first_name="Sam",
@@ -90,11 +102,25 @@ def run(*args):
             password=hashed_password,
         )
     )
-    with transaction.atomic():
-        for user in users_to_create:
-            user.save()
+    service_profiles = [ServiceProfile(user=user) for user in students_to_create]
+    leadership_profiles = [LeadershipProfile(user=user) for user in students_to_create]
+    personal_profiles = [PersonalProfile(user=user) for user in students_to_create]
+    gpa_records = [
+        GPARecord(gpa=0, year=year, semester=semester, personal_profile=profile)
+        for profile in personal_profiles
+        for year in range(
+            2000 + int(official_class[:2]) - 3, 2000 + int(official_class[:2]) + 1
+        )
+        for semester in [1, 2]
+    ]
 
-    print(f"Migrated {len(users_to_create)} users")
+    CustomUser.objects.bulk_create(students_to_create + others_to_create)
+    ServiceProfile.objects.bulk_create(service_profiles)
+    LeadershipProfile.objects.bulk_create(leadership_profiles)
+    PersonalProfile.objects.bulk_create(personal_profiles)
+    GPARecord.objects.bulk_create(gpa_records)
+
+    print(f"Migrated {len(students_to_create)} users")
     print(f"Skipped {skipped} rows")
     print(
         f"Password mode: {'Fake (Insecure, do not use for production)' if use_fake_passwords else 'REAL (Secure)'}"
