@@ -102,6 +102,15 @@ def run(*args):
             password=hashed_password,
         )
     )
+    students_to_create.append(
+        CustomUser(
+            email="benb@nycstudents.net",
+            first_name="Ben",
+            last_name="B",
+            user_type=0,
+            password=hashed_password,
+        )
+    )
     service_profiles = [ServiceProfile(user=user) for user in students_to_create]
     leadership_profiles = [LeadershipProfile(user=user) for user in students_to_create]
     personal_profiles = [PersonalProfile(user=user) for user in students_to_create]
