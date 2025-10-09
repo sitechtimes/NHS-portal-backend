@@ -27,6 +27,7 @@ def run(*args):
     with open(csv_path, newline="", encoding="utf-8") as csvfile:
         reader = list(csv.DictReader(csvfile))
         total_rows = len(reader)
+        hashed_password = "pbkdf2_sha256$1000000$0rTiKuDxTigKJRIAJY8iCE$6o6YXkgdkdzLTFYoICkbKn6HIJwyTLffROKW3Zs5K3Q="
 
         # Use tqdm only if real passwords (for progress bar), else just plain iterator
         rows_iter = (
@@ -58,10 +59,7 @@ def run(*args):
             seen_emails.add(email)
             raw_password = email.split("@")[0]
 
-            if use_fake_passwords:
-                # fixed hashed password for testing, raw is "password"
-                hashed_password = "pbkdf2_sha256$1000000$0rTiKuDxTigKJRIAJY8iCE$6o6YXkgdkdzLTFYoICkbKn6HIJwyTLffROKW3Zs5K3Q="
-            else:
+            if not use_fake_passwords:
                 hashed_password = make_password(raw_password)
 
             students_to_create.append(
@@ -74,6 +72,8 @@ def run(*args):
                     password=hashed_password,
                 )
             )
+    hashed_password = "pbkdf2_sha256$1000000$0rTiKuDxTigKJRIAJY8iCE$6o6YXkgdkdzLTFYoICkbKn6HIJwyTLffROKW3Zs5K3Q="
+
     others_to_create = []
     others_to_create.append(
         CustomUser(

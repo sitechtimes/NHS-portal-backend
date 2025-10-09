@@ -107,6 +107,8 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
+TEST_RUNNER = "tests.testrunner.CustomTestRunner"
+
 # API Documentation Settings
 SPECTACULAR_SETTINGS = {
     "TITLE": "NHS Portal API",
