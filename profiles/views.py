@@ -202,7 +202,7 @@ class PersonalProfileViewSet(
                 {
                     "error": "Cannot approve a personal profile that has not been submitted."
                 },
-                status=HTTP_400_BAD_REQUEST,
+                status=status.HTTP_400_BAD_REQUEST,
             )
         personal_profile.approved = True
         personal_profile.save()

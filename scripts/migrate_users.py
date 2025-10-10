@@ -8,8 +8,10 @@ from profiles.models import (
     PersonalProfile,
     GPARecord,
 )
+from events.models import ServiceEvent
 from django.contrib.auth.hashers import make_password
 from tqdm import tqdm
+from datetime import datetime, timedelta
 
 
 def run(*args):
@@ -138,6 +140,13 @@ def run(*args):
     PersonalProfile.objects.bulk_create(personal_profiles)
     GPARecord.objects.bulk_create(gpa_records)
 
+    ServiceEvent.objects.create(
+        name="Welcome Day",
+        description="Welcome Day",
+        time_start=datetime.now(),
+        time_end=datetime.now() + timedelta(days=1),
+        nfc_id="407871a446f04c49a14114eb4762af71",
+    )
     print(f"Migrated {len(students_to_create)} users")
     print(f"Skipped {skipped} rows")
     print(
