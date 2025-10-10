@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+import json
 
 
 class StudentViewsTest(APITestCase):
@@ -53,12 +54,11 @@ class AnnouncementViewsTest(APITestCase):
     def test_create_announcement_view(self):
         url = "/guidance/announcements/"
         response = self.client.post(
-            url,
+            "/guidance/announcements/",
             {
                 "title": "Sample Announcement 3",
                 "message": "This is a test message for the announcement 3.",
-                "recipient_emails": ["sam.kipnis@gmail.com"],
-                "send_immediately": True,
+                "send_immediately": "true",
             },
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -70,7 +70,7 @@ class AnnouncementViewsTest(APITestCase):
                 "title": "Sample Announcement 3",
                 "message": "This is a test message for the announcement 3.",
                 "recipient_emails": ["sam.kipnis@gmail.com"],
-                "send_immediately": True,
+                "send_immediately": "true",
             },
         )
         url = "/guidance/announcements/1/"
@@ -82,5 +82,41 @@ class AnnouncementViewsTest(APITestCase):
 
     def test_all_announcements_view(self):
         url = "/guidance/announcements/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class BiographicalQuestionViewsTest(APITestCase):
+    def setUp(self):
+        email = "guidance@gmail.com"
+        password = "password"
+        access_token = self.client.post(
+            "/api/token/", {"email": email, "password": password}
+        ).data["access"]
+
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + access_token)
+
+    def test_create_biographical_question_view(self):
+        url = "/guidance/biographical-questions/"
+        response = self.client.post(
+            "/guidance/biographical-questions/",
+            {"question": "Sample Question 3", "answer": "Sample Answer 3"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_delete_biographical_question_view(self):
+        self.client.post(
+            "/guidance/biographical-questions/",
+            {"question": "Sample Question 3", "answer": "Sample Answer 3"},
+        )
+        url = "/guidance/biographical-questions/1/"
+        response = self.client.delete(url)
+        self.assertIn(
+            response.status_code,
+            [status.HTTP_404_NOT_FOUND, status.HTTP_204_NO_CONTENT],
+        )
+
+    def test_all_biographical_questions_view(self):
+        url = "/guidance/biographical-questions/"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
