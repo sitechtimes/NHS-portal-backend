@@ -1,0 +1,1188 @@
+{
+	"info": {
+		"_postman_id": "f5124984-a031-48b0-818c-0e91d5b9e6d8",
+		"name": "Backend API Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19682454",
+		"_collection_link": "https://planetary-eclipse-850810.postman.co/workspace/NHS-Portal-Backend~b8f6910f-3cbb-4837-93f8-29e4913d30b1/collection/19682454-f5124984-a031-48b0-818c-0e91d5b9e6d8?action=share&source=collection_link&creator=19682454"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "API Token (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": ["const responseJson = pm.response.json();", "pm.collectionVariables.set(\"access_token\", responseJson.access)", "pm.collectionVariables.set(\"refresh_token\", responseJson.refresh)"],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\n//     \"email\":\"bogdans3@nycstudents.net\",\n//     \"password\":\"password\"\n// }\n{\n    \"email\": \"admin@example.com\",\n    \"password\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/token/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "token", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Token (Guidance)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": ["const responseJson = pm.response.json();", "pm.collectionVariables.set(\"access_token\", responseJson.access)", "pm.collectionVariables.set(\"refresh_token\", responseJson.refresh)"],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\n//     \"email\":\"bogdans3@nycstudents.net\",\n//     \"password\":\"password\"\n// }\n// {\n//     \"email\": \"admin@example.com\",\n//     \"password\": \"admin\"\n// }\n{\n    \"email\": \"guidance@gmail.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/token/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "token", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Token (Teacher 1)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": ["const responseJson = pm.response.json();", "pm.collectionVariables.set(\"access_token\", responseJson.access)", "pm.collectionVariables.set(\"refresh_token\", responseJson.refresh)"],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\n//     \"email\":\"bogdans3@nycstudents.net\",\n//     \"password\":\"password\"\n// }\n// {\n//     \"email\": \"admin@example.com\",\n//     \"password\": \"admin\"\n// }\n{\n    \"email\": \"teacher1@gmail.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/token/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "token", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Token (Teacher 2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": ["const responseJson = pm.response.json();", "pm.collectionVariables.set(\"access_token\", responseJson.access)", "pm.collectionVariables.set(\"refresh_token\", responseJson.refresh)"],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\n//     \"email\":\"bogdans3@nycstudents.net\",\n//     \"password\":\"password\"\n// }\n// {\n//     \"email\": \"admin@example.com\",\n//     \"password\": \"admin\"\n// }\n{\n    \"email\": \"teacher2@gmail.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/token/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "token", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Token (Student)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": ["const responseJson = pm.response.json();", "pm.collectionVariables.set(\"access_token\", responseJson.access)", "pm.collectionVariables.set(\"refresh_token\", responseJson.refresh)"],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"bogdans3@nycstudents.net\",\n    \"password\":\"password\"\n}\n// {\n//     \"email\": \"admin@example.com\",\n//     \"password\": \"admin\"\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/token/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "token", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Token Refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": ["const responseJson = pm.response.json();\r", "pm.collectionVariables.set(\"access_token\", responseJson.access)"],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh\":\"{{refresh_token}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/token/refresh/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "token", "refresh", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service Profile",
+			"item": [
+				{
+					"name": "Create Service Activity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "doing things 2",
+									"type": "text"
+								},
+								{
+									"key": "supervisor",
+									"value": "sam kipnis 2",
+									"type": "text"
+								},
+								{
+									"key": "grades",
+									"value": "[9, 10, 11]",
+									"type": "text"
+								},
+								{
+									"key": "hours",
+									"value": "45",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Sam/OneDrive/Pictures/Screenshots 1/Screenshot 2024-03-03 161817.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/service-activities/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "service-activities", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Service Activity",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"the activity that i did and is cool\",\n    \"supervisor\": \"sam kipnis\",\n    \"grades\": [9, 10],\n    \"hours\": 80\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/service-activities/1/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "service-activities", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Service Activity",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/service-activities/1/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "service-activities", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Event Activity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"bogdans3@nycstudents.net\",\r\n  \"nfc_id\": \"407871a446f04c49a14114eb4762af71\",\r\n  \"api_key\": \"api_key\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/event-activities/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "event-activities", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Service Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/service-profiles/1/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "service-profiles", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Service Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/service-profiles/1/submit/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "service-profiles", "1", "submit", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unsubmit Service Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/service-profiles/1/unsubmit/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "service-profiles", "1", "unsubmit", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Service Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/service-profiles/1/approve/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "service-profiles", "1", "approve", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Leadership Profile",
+			"item": [
+				{
+					"name": "Create Leadership Activity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "doing things 2",
+									"type": "text"
+								},
+								{
+									"key": "supervisor",
+									"value": "sam kipnis 2",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Sam/OneDrive/Pictures/Screenshots 1/Screenshot 2024-03-03 161817.png"
+								},
+								{
+									"key": "description",
+									"value": "description of things i did",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/leadership-activities/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "leadership-activities", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Leadership Activity",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"the activity that i did and is cooler\",\n    \"supervisor\": \"sam kipnis\",\n    \"description\": \"mmm description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/leadership-activities/1/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "leadership-activities", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Leadership Activity",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/leadership-activities/1/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "leadership-activities", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Leadership Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/leadership-profiles/1/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "leadership-profiles", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Leadership Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/leadership-profiles/1/submit/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "leadership-profiles", "1", "submit", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unsubmit Leadership Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/leadership-profiles/1/unsubmit/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "leadership-profiles", "1", "unsubmit", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Leadership Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/leadership-profiles/1/approve/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "leadership-profiles", "1", "approve", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Personal Profile",
+			"item": [
+				{
+					"name": "Update Personal Profile",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"character_issues\": 1,\n    \"notes\": \"good student ig\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/personal-profiles/1/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "personal-profiles", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Personal Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/personal-profiles/1/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "personal-profiles", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Personal Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/personal-profiles/1/submit/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "personal-profiles", "1", "submit", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unsubmit Personal Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/personal-profiles/1/unsubmit/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "personal-profiles", "1", "unsubmit", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Personal Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/personal-profiles/1/approve/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "personal-profiles", "1", "approve", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update GPA Record",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"gpa\": 3.0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles/gpa-records/1/",
+							"host": ["{{base_url}}"],
+							"path": ["profiles", "gpa-records", "1", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Guidance",
+			"item": [
+				{
+					"name": "Student View",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/guidance/students/1/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "students", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Multiple Students View",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/guidance/students/multiple/?ids=[1,2,3]",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "students", "multiple", ""],
+							"query": [
+								{
+									"key": "ids",
+									"value": "[1,2,3]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Students View",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/guidance/students/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "students", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Students View",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/guidance/students/filter/?first_name=John",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "students", "filter", ""],
+							"query": [
+								{
+									"key": "first_name",
+									"value": "John"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Expanded Student View",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/guidance/students/1/expanded/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "students", "1", "expanded", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Announcement",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Sample Announcement\",\r\n  \"message\": \"This is a test message for the announcement.\",\r\n  \"recipient_emails\": [\r\n    \"sam.kipnis@gmail.com\"\r\n  ],\r\n  \"send_immediately\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/announcements/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "announcements", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Announcement",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Sample Announcement\",\r\n  \"message\": \"This is a test message for the announcement.\",\r\n  \"recipient_emails\": [\r\n    \"sam.kipnis@gmail.com\"\r\n  ],\r\n  \"send_immediately\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/announcements/1/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "announcements", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Announcements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/guidance/announcements/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "announcements", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Biographical Question",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question_text\": \"this is the text of the third question\",\r\n    \"answer_type\": \"text\"\r\n    // \"options\": [\"A\", \"B\", \"C\", \"D\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/questions/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "questions", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Biographical Questions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/guidance/questions/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "questions", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Biographical Question",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question_text\": \"this is the text of the second question\",\r\n    \"answer_type\": \"dropdown\",\r\n    \"options\": [\r\n        \"E\", \"F\", \"G\", \"H\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/questions/1/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "questions", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Question Instance",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"answer\": \"text answer\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/question-instances/1/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "question-instances", "1", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request Recommendation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"recommendation_type\": \"character\",\r\n    \"teacher_email\": \"teacher1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/recommendations/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "recommendations", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Recommendation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/recommendations/1/approve/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "recommendations", "1", "approve", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deny Recommendation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/recommendations/2/deny/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "recommendations", "2", "deny", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Teacher Dashboard",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/teacher-dashboard/354/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "teacher-dashboard", "354", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Teacher Recommendation Requests",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/teacher-recommendation-requests/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "teacher-recommendation-requests", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Guidance Dashboard",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/guidance-dashboard/355/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "guidance-dashboard", "355", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Guidance Submitted Profiles",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/guidance/guidance-submitted-profiles/",
+							"host": ["{{base_url}}"],
+							"path": ["guidance", "guidance-submitted-profiles", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Create Event",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Peer Tutoring\",\r\n  \"description\": \"Weekly peer tutoring session.\",\r\n  \"time_start\": \"2025-09-15T15:30:00Z\",\r\n  \"time_end\": \"2025-09-15T17:00:00Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/events/",
+							"host": ["{{base_url}}"],
+							"path": ["events", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": ""
+		}
+	]
+}

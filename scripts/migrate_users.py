@@ -102,6 +102,15 @@ def run(*args):
             password=hashed_password,
         )
     )
+    others_to_create.append(
+        CustomUser(
+            email="admin@gmail.com",
+            first_name="Sam",
+            last_name="Kipnis",
+            user_type=3,
+            password=hashed_password,
+        )
+    )
     students_to_create.append(
         CustomUser(
             email="benb@nycstudents.net",
