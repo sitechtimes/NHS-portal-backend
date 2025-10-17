@@ -1,0 +1,15 @@
+meta {
+  name: Submit Personal Profile
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/profiles/personal-profiles/1/submit/
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Create Leadership Activity
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/profiles/leadership-activities/
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  title: doing things 2
+  supervisor: sam kipnis 2
+  image: @file(/C:/Users/Sam/OneDrive/Pictures/Screenshots 1/MusicalSymbols.png)
+  description: description of things i did
+}
+
+settings {
+  encodeUrl: true
+}

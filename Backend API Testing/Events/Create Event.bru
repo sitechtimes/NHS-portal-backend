@@ -1,0 +1,24 @@
+meta {
+  name: Create Event
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/events/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Peer Tutoring",
+    "description": "Weekly peer tutoring session.",
+    "time_start": "2025-09-15T15:30:00Z",
+    "time_end": "2025-09-15T17:00:00Z"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

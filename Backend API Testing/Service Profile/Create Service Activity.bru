@@ -1,0 +1,23 @@
+meta {
+  name: Create Service Activity
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/profiles/service-activities/
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  title: doing things 2
+  supervisor: sam kipnis 2
+  grades: [9, 10, 11]
+  hours: 45
+  image: @file(/C:/Users/Sam/OneDrive/Pictures/Screenshots 1/Screenshot 2024-03-03 161817.png)
+}
+
+settings {
+  encodeUrl: true
+}

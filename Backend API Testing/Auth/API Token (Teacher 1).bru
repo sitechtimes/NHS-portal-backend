@@ -1,0 +1,36 @@
+meta {
+  name: API Token (Teacher 1)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/token/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  // {
+  //     "email":"bogdans3@nycstudents.net",
+  //     "password":"password"
+  // }
+  // {
+  //     "email": "admin@example.com",
+  //     "password": "admin"
+  // }
+  {
+      "email": "teacher1@gmail.com",
+      "password": "password"
+  }
+}
+
+script:post-response {
+  const responseJson = res.getBody();
+  bru.setVar("access_token", responseJson.access)
+  bru.setVar("refresh_token", responseJson.refresh)
+}
+
+settings {
+  encodeUrl: true
+}

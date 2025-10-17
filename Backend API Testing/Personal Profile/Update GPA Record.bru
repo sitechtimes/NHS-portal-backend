@@ -1,0 +1,21 @@
+meta {
+  name: Update GPA Record
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{base_url}}/profiles/gpa-records/1/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "gpa": 3.0
+  }
+}
+
+settings {
+  encodeUrl: true
+}

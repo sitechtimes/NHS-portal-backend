@@ -1,0 +1,15 @@
+meta {
+  name: Unsubmit Service Profile
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/profiles/service-profiles/1/unsubmit/
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

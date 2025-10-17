@@ -1,0 +1,26 @@
+meta {
+  name: Create Announcement
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/guidance/announcements/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "Sample Announcement",
+    "message": "This is a test message for the announcement.",
+    "recipient_emails": [
+      "sam.kipnis@gmail.com"
+    ],
+    "send_immediately": true
+  }
+}
+
+settings {
+  encodeUrl: true
+}

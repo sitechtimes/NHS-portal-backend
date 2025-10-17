@@ -1,0 +1,15 @@
+meta {
+  name: Delete Leadership Activity
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{base_url}}/profiles/leadership-activities/1/
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Get Leadership Profile
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/profiles/leadership-profiles/1/
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

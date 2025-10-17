@@ -1,0 +1,19 @@
+meta {
+  name: Filter Students View
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/guidance/students/filter/?first_name=John
+  body: none
+  auth: inherit
+}
+
+params:query {
+  first_name: John
+}
+
+settings {
+  encodeUrl: true
+}

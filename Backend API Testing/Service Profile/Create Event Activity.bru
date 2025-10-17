@@ -1,0 +1,23 @@
+meta {
+  name: Create Event Activity
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/profiles/event-activities/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "bogdans3@nycstudents.net",
+    "nfc_id": "407871a446f04c49a14114eb4762af71",
+    "api_key": "api_key"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

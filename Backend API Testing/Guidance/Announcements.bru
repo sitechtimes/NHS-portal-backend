@@ -1,0 +1,15 @@
+meta {
+  name: Announcements
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/guidance/announcements/
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

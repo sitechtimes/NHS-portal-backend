@@ -1,0 +1,22 @@
+meta {
+  name: Request Recommendation
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{base_url}}/guidance/recommendations/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "recommendation_type": "leadership",
+      "teacher_email": "teacher1@gmail.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

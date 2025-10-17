@@ -1,0 +1,15 @@
+meta {
+  name: Approve Recommendation
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{base_url}}/guidance/recommendations/1/approve/
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

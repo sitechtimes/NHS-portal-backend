@@ -1,0 +1,15 @@
+meta {
+  name: Submit Service Profile
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/profiles/service-profiles/1/submit/
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

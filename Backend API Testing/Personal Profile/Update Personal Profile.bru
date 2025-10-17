@@ -1,0 +1,22 @@
+meta {
+  name: Update Personal Profile
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{base_url}}/profiles/personal-profiles/1/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "character_issues": 1,
+      "notes": "good student ig"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

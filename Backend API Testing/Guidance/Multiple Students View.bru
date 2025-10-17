@@ -1,0 +1,19 @@
+meta {
+  name: Multiple Students View
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/guidance/students/multiple/?ids=[1,2,3]
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ids: [1,2,3]
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Submit Question Instance
+  type: http
+  seq: 12
+}
+
+patch {
+  url: {{base_url}}/guidance/question-instances/35/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "answer": "text answer"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
