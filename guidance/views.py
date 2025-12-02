@@ -83,17 +83,13 @@ class StudentViewSet(
         return Response(serializer.data)
 
 
-class AnnouncementViewSet(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-):
+class AnnouncementViewSet(viewsets.ModelViewSet):
     queryset = Announcement.objects.all().order_by("-created_at")
     serializer_class = AnnouncementSerializer
 
     def get_permissions(self):
-        if self.action in ("create", "destroy"):
+        print(self.action)
+        if self.action in ("create", "destroy", "partial_update"):
             perms = [IsTeacher | IsGuidance | IsAdmin]
         elif self.action == "list":
             perms = [IsAuthenticated]
