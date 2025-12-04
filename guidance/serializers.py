@@ -31,6 +31,7 @@ class AnnouncementSerializer(serializers.ModelSerializer):
             "recipient_emails",
             "title",
             "message",
+            "created_at",
             "send_immediately",
         ]
         read_only_fields = ["id", "created_at"]

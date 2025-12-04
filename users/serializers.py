@@ -6,6 +6,7 @@ from django.db.models import Q
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    service_hours = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -17,6 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "user_type",
             "password",
+            "service_hours",
         ]
 
     def create(self, validated_data):
@@ -40,3 +42,6 @@ class UserSerializer(serializers.ModelSerializer):
         lookup_field = "email"
         user = CustomUser.objects.get(id=instance.get("pk"))
         return user
+
+    def get_service_hours(self, obj):
+        return obj.service_profile.total_hours
