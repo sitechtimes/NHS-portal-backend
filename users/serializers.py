@@ -44,4 +44,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def get_service_hours(self, obj):
-        return obj.service_profile.total_hours
+        if hasattr(obj, "service_profile"):
+            return obj.service_profile.total_hours
+        else:
+            return 0
