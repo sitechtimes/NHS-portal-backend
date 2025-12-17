@@ -38,6 +38,7 @@ class ServiceActivityViewSet(
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
+    mixins.ListModelMixin,
 ):
     queryset = ServiceActivity.objects.all()
     serializer_class = ServiceActivitySerializer
@@ -57,6 +58,7 @@ class LeadershipActivityViewSet(
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
+    mixins.ListModelMixin,
 ):
     queryset = LeadershipActivity.objects.all()
     serializer_class = LeadershipActivitySerializer
@@ -71,7 +73,9 @@ class LeadershipActivityViewSet(
         return [p() for p in perms]
 
 
-class ServiceProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class ServiceProfileViewSet(
+    mixins.RetrieveModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin
+):
     queryset = ServiceProfile.objects.all()
     serializer_class = ServiceProfileSerializer
 
@@ -116,7 +120,9 @@ class ServiceProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         return Response(serializer.data)
 
 
-class LeadershipProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class LeadershipProfileViewSet(
+    mixins.RetrieveModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin
+):
     queryset = LeadershipProfile.objects.all()
     serializer_class = LeadershipProfileSerializer
 
@@ -162,7 +168,10 @@ class LeadershipProfileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSe
 
 
 class PersonalProfileViewSet(
-    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+    mixins.ListModelMixin,
 ):
     queryset = PersonalProfile.objects.all()
     serializer_class = PersonalProfileSerializer
